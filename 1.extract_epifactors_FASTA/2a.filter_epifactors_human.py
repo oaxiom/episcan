@@ -1,39 +1,23 @@
 #!/usr/bin/env python3
+import sys, os
 from glbase3 import *
 user_path = os.path.expanduser("~")
 
 form = {'force_tsv': False, 'uniprot': 6, 'hgncid': 3}
 
 # extract the list of domains
-epifactors_hg38 = genelist(filename='EpiGenes_main.20150522.csv', format=form)
+epifactors_hg38 = genelist(filename='EpiGenes_main.csv', format=form)
 
 # First, fix the name key, which is wrong in the EpiGenes table
-annot = genelist(filename='ensp_hgnc_name.txt', format={'force_tsv': True, 'ensp': 0, 'hgncid': 1, 'name': 2}) 
-
-# trim the HNNC: from the ENSP accession
-for i in annot:
-    if i['ensp'] and i['hgncid']:
-        i['hgncid'] = int(i['hgncid'].split(':')[1])
-annot._optimiseData()
-annot = annot.removeDuplicates('ensp') # remove the ' ' entries
-annot.save('annot.glb')
+annot = glload('../gencode/hs_annot.glb') 
 
 print(epifactors_hg38)
 print(annot)
 
 epifactors_hg38 = epifactors_hg38.map(genelist=annot, key='hgncid')
 
-#TFs = glload('all_tfs.glb') # bad ideas as e.g. EP300 is in there 
-#DUDEDB = glload('all_dudedb.glb')
 start_len = len(epifactors_hg38)
-# These two are a bad idea, e.g. KDM2B has an E-box. Best just not to chose these domains.
-# These two are a bad idea, e.g. KDM2B has an E-box. Best just not to chose these domains...
-# cut known TFs:
-#epifactors_hg38 = TFs.map(genelist=epifactors_hg38, key='name', logic='notright')
-# cut known UB and DEUB
-#epifactors_hg38 = DUDEDB.map(genelist=epifactors_hg38, key='name', logic='notright')
 
-# Also filter kinases and phosphatases
 filt = [ # Must be a literal match:   
     '#',
     'ACTB', 
@@ -85,15 +69,15 @@ epifactors_hg38.load_list(newe)
 
 # These are just to get hte FASTA peptide files
 epifactors_hg38 = epifactors_hg38.removeDuplicates('ensp')
-epifactors_hg38.saveTSV('epifactors.all.tsv', key_order=['ensp', 'name'])
-epifactors_hg38.save('epifactors.all.glb')
+epifactors_hg38.saveTSV('hs_epifactors.all.tsv', key_order=['ensp', 'name'])
+epifactors_hg38.save('hs_epifactors.all.glb')
 
 # These are the more useful human-readable versions, unqique for hgncid
 epifactors_hg38 = epifactors_hg38.removeDuplicates('hgncid')
 end_len = len(epifactors_hg38)
 epifactors_hg38.sort('name')
-epifactors_hg38.saveTSV('epifactors.filtered.tsv', key_order=['uniprot', 'ensp', 'name'])
-epifactors_hg38.save('epifactors.filtered.glb')
+epifactors_hg38.saveTSV('hs_epifactors.filtered.tsv', key_order=['uniprot', 'ensp', 'name'])
+epifactors_hg38.save('hs_epifactors.filtered.glb')
 
 print('%s -> %s (cut %s)' % (start_len, end_len, start_len - end_len))
 

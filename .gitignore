@@ -1,5 +1,9 @@
 # Custom
 gencode.v32.pc_translations.fa.gz
+*.glb
+EpiGenes_main.csv
+*map.tsv
+*.swp
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
