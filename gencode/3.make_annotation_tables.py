@@ -12,7 +12,7 @@ for i in annot:
 annot = genelist()
 annot.load_list(newl)
 print(annot)
-annot.save('annot.glb')
+annot.save('hs_annot.glb')
 
 
 
