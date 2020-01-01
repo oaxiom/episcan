@@ -5,6 +5,9 @@ EpiGenes_main.csv
 *map.tsv
 *.swp
 
+*_epifactors.*.tsv
+Pfam-A.full.gz
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
