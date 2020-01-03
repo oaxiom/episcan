@@ -8,6 +8,7 @@ EpiGenes_main.csv
 *_epifactors.*.tsv
 Pfam-A.full.gz
 results.out
+*.fa
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
