@@ -7,6 +7,7 @@ from glbase3 import *
 pfam = genelist(filename='pfam.txt', format=format.hmmer_tbl)
 
 done = {}
+gltab = []
 for line in pfam:
     hmm = line['score'] # all in the wrong columns
     name = line['dom_acc']
@@ -15,12 +16,17 @@ for line in pfam:
         done[(name, hmm)] = 0
     done[(name, hmm)] += 1
 
-oh = open('counted_hmms.txt', 'w')
-for m in sorted(done, key=done.get, reverse=True):
-    #if done[m] < 1: # Don't restrict by the number of domains
-    #    continue # reenable for the final table
-    oh.write('%s\t%s\t%s\n' % (m[0] ,m[1], done[m]))
-oh.close()
+newl = []
+for dom in done:
+    
+    gltab = {'name': dom[0], 'acc': dom[1], 'count': done[dom]}
+    newl.append(gltab)
+
+gl = genelist()
+gl.load_list(newl)
+gl.sort('name')
+gl.save('domains.glb')
+gl.saveTSV('domains.txt', key_order=['name'])
 
 
 
