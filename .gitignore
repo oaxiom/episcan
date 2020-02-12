@@ -4,6 +4,7 @@ gencode.v32.pc_translations.fa.gz
 EpiGenes_main.csv
 *map.tsv
 *.swp
+Pfam-A.hmm.gz
 
 *_epifactors.*.tsv
 Pfam-A.full.gz
