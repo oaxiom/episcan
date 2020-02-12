@@ -5,7 +5,7 @@ EpiGenes_main.csv
 *map.tsv
 *.swp
 Pfam-A.hmm.gz
-Pfam-A.hmm
+Pfam-A.hmm*
 
 *_epifactors.*.tsv
 Pfam-A.full.gz
