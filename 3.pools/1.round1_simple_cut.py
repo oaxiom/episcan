@@ -29,7 +29,6 @@ for i1, dom1 in enumerate(doms):
                     pair_doms.append(dom1) 
                     # Work out the sum of scores...
 
-
 print(pair_doms)                
     
 
