@@ -48,4 +48,14 @@ oh.close()
 
 # heatmap
 e = expression(loadable_list=gltab, cond_names=doms)
-e.heatmap('all_models.pdf', border=True)
+e.save('model_matrix.glb')
+
+all_ensp = len(e)
+e = e.filter_low_expressed(0.9,1)
+if len(e) < all_ensp:
+    print('Warning! Detected={0} < {1}=AllEnsp, reduce your Evalue?'.format(len(e), all_ensp))
+
+config.draw_mode = 'pdf'
+e.heatmap('all_models.pdf', border=True,
+    heat_wid=0.6, optimal_ordering=False,
+    size=[12,12])

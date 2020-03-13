@@ -5,11 +5,15 @@ from glbase3 import *
 
 Round 1, we cut domains that are redundant with other doamins.
 
-Basically, if they fidn the same genes, we trim them from the list
+Basically, if they find the same proteins, we can trim them from the list
 
 '''
 
 pfam = genelist(filename='../2.determine_reqd_models/pfam.txt', format=format.hmmer_tbl)
+
+model_matrix = glload('../2.determine_reqd_models/domains.glb')
+
+all_models = model_matrix.getConditionNames()
 
 doms = {}
 
@@ -26,9 +30,9 @@ for i1, dom1 in enumerate(doms):
                 # Check all the same
                 if False not in [i1 == i2 for i1, i2 in zip(doms[dom1], doms[dom2])]:
                     pair_doms.append(dom2)
-                    pair_doms.append(dom1) 
+                    pair_doms.append(dom1)
                     # Work out the sum of scores...
 
-print(pair_doms)                
-    
+print(pair_doms)
+
 
