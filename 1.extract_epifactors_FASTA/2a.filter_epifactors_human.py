@@ -9,7 +9,7 @@ form = {'force_tsv': False, 'uniprot': 6, 'hgncid': 3}
 epifactors_hg38 = genelist(filename='EpiGenes_main.csv', format=form)
 
 # First, fix the name key, which is wrong in the EpiGenes table
-annot = glload('../gencode/hs_annot.glb') 
+annot = glload('../gencode/hs_annot.glb')
 
 print(epifactors_hg38)
 print(annot)
@@ -18,11 +18,12 @@ epifactors_hg38 = epifactors_hg38.map(genelist=annot, key='hgncid')
 
 start_len = len(epifactors_hg38)
 
-filt = [ # Must be a literal match:   
+# I remove a selection of epifactors that I don't consider as epifactors!
+filt = [ # Must be a literal match:
     '#',
-    'ACTB', 
+    'ACTB',
     'ACTL6A', 'ACTL6B', 'ACTR3B',
-    'ACTR5', 'ACTR6', 'ACTR8', 
+    'ACTR5', 'ACTR6', 'ACTR8',
     'ANKRD32',
     'ATM',
     'ATR',
@@ -34,8 +35,8 @@ filt = [ # Must be a literal match:
     'CHEK1',
     'CHUK',
     'CIT',
-    'CSNK2A1', 
-    'CTCF', 'CTCFL', 
+    'CSNK2A1',
+    'CTCF', 'CTCFL',
     'DAPK3',
     'DND1',
     'ENY2', # A TF
@@ -44,20 +45,20 @@ filt = [ # Must be a literal match:
     'FOXA1', 'FOXO1', 'FOXP1', 'FOXP2', 'FOXP3', 'FOXP4',
     'GFI1', 'GFI1B',
     'GSG2',
-    'JAK2',    
+    'JAK2',
     'MAP3K7', 'MAPKAPK3', 'MASTL', 'MYO1C', # Myosin?
-    'NEK6', 'NEK9', 'NEK8', 
-    'PAK2', 'PBK', 'PDP1', 'PDK1', 'PDK2', 'PDK3', 'PDK4', 'PKM', 'PKN1', 
-    'PPM1G', 'PPP2CA', 'PPP4C', 
+    'NEK6', 'NEK9', 'NEK8',
+    'PAK2', 'PBK', 'PDP1', 'PDK1', 'PDK2', 'PDK3', 'PDK4', 'PKM', 'PKN1',
+    'PPM1G', 'PPP2CA', 'PPP4C',
     'PRKAA1', 'PRKAA2', 'PRKAB1', 'PRKAB2', 'PRKAG1', 'PRKAG2', 'PRKAG3', 'PRKCA', 'PRKCB', 'PRKCD', 'PRKDC',
     'RPS6KA3', 'RPS6KA4' ,'RPS6KA5',
     'REST',
     'SKP1', 'STK4', 'STK31',
     'SF3B1', 'SF3B3', # Splicesomal member
     'SMEK1', 'SMEK2',
-    'SNAI1',
+    'SNAI1', 'SNAI2',
     'TTBK1', 'TLK1', 'TLK2', 'TSSK6', 'TRRAP', 'TTK',
-    'VRK1',    
+    'VRK1',
     ]
 
 newe = []

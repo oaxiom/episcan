@@ -8,17 +8,30 @@ Pfam-A.hmm.gz
 Pfam-A.hmm*
 pfam.txt
 
+*.hmm
+*.hmm.h3f
+*.hmm.h3i
+*.hmm.h3m
+*.hmm.h3p
+PANTHER15.0_ascii.tgz
+TIGRFAMs.hmm
+TIGRFAMs_14.0_HMM.tar
+funfam-hmm3.lib.gz
+panther.hmm
+
 *_epifactors.*.tsv
 Pfam-A.full.gz
 results.out
 *.fa
-
+*.pdf
 *.icloud
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
 *$py.class
+
+.DS_Store
 
 # C extensions
 *.so

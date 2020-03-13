@@ -51,11 +51,18 @@ e = expression(loadable_list=gltab, cond_names=doms)
 e.save('model_matrix.glb')
 
 all_ensp = len(e)
-e = e.filter_low_expressed(0.9,1)
-if len(e) < all_ensp:
-    print('Warning! Detected={0} < {1}=AllEnsp, reduce your Evalue?'.format(len(e), all_ensp))
+filte = e.filter_low_expressed(0.9,1)
+if len(filte) < all_ensp:
+    print('Warning! Detected={0} < {1}=AllEnsp, reduce your Evalue?'.format(len(filte), all_ensp))
+
+undetected = filte.map(genelist=e, key='ensp', logic='notright').getColumns(['ensp', 'name'], strip_expn=True)
+undetected = undetected.removeDuplicates('name')
+undetected.sort('name')
+undetected.saveTSV('undetected_by_hmmer.tsv')
+filte.getColumns(['ensp', 'name'], strip_expn=True).saveTSV('detected_by_hmmer.tsv')
 
 config.draw_mode = 'pdf'
-e.heatmap('all_models.pdf', border=True,
-    heat_wid=0.6, optimal_ordering=False,
+filte.heatmap('all_models.pdf', border=True, imshow=True,
+    col_cluster=True,
+    heat_wid=0.75, optimal_ordering=False,
     size=[12,12])
