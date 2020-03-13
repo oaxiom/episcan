@@ -44,22 +44,22 @@ for item in tab:
     gltab.append({'name': item[1], 'ensp': item[0], 'conditions': [i for i in row]})
 oh.close()
 
-
-
 # heatmap
 e = expression(loadable_list=gltab, cond_names=doms)
 e.save('model_matrix.glb')
 
-all_ensp = len(e)
 filte = e.filter_low_expressed(0.9,1)
-if len(filte) < all_ensp:
-    print('Warning! Detected={0} < {1}=AllEnsp, reduce your Evalue?'.format(len(filte), all_ensp))
-
-undetected = filte.map(genelist=e, key='ensp', logic='notright').getColumns(['ensp', 'name'], strip_expn=True)
+detected = filte.removeDuplicates('name')
+undetected = detected.map(genelist=e, key='name', logic='notright').getColumns(['ensp', 'name'], strip_expn=True)
 undetected = undetected.removeDuplicates('name')
 undetected.sort('name')
 undetected.saveTSV('undetected_by_hmmer.tsv')
 filte.getColumns(['ensp', 'name'], strip_expn=True).saveTSV('detected_by_hmmer.tsv')
+
+all_ensp = len(e)
+
+if len(undetected) < len(detected):
+    print('Warning! Undetected={0} < {1}=AllEnsp, reduce your Evalue?'.format(len(undetected), len(detected)))
 
 config.draw_mode = 'pdf'
 filte.heatmap('all_models.pdf', border=True, imshow=True,

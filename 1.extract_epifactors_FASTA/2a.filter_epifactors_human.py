@@ -40,7 +40,7 @@ filt = [ # Must be a literal match:
     'CIT',
     'CSNK2A1',
     'CTCF', 'CTCFL',
-    'DAPK3','DDX50',
+    'DAPK3','DDX50', 'DPPA3',
     'DPF1',
     'DND1',
     'E2F6',
