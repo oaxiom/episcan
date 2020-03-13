@@ -6,11 +6,14 @@ EpiGenes_main.csv
 *.swp
 Pfam-A.hmm.gz
 Pfam-A.hmm*
+pfam.txt
 
 *_epifactors.*.tsv
 Pfam-A.full.gz
 results.out
 *.fa
+
+*.icloud
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
