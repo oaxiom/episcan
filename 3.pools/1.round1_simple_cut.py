@@ -4,7 +4,7 @@ from glbase3 import *
 
 '''
 
-Round 1, we cut domains that are redundant with other doamins.
+Round 1, we cut domains that are redundant with other domains.
 
 Basically, if they find the exact same proteins, we can trim them from the list
 

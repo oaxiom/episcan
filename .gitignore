@@ -7,6 +7,7 @@ EpiGenes_main.csv
 Pfam-A.hmm.gz
 Pfam-A.hmm*
 pfam.txt
+funfam-hmm3.lib
 
 *.hmm
 *.hmm.h3f

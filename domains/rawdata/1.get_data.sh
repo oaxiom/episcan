@@ -1,4 +1,7 @@
 
+# Only need to do this once:
+#find rawdata/ascii/PANTHER15.0/books/ -maxdepth 2 -name "*.hmm" | xargs cat >panther.hmm
+
 # Get he most recent Pfam, CATH-3D, PANTHER, TIGRFAM 
 wget -c ftp://ftp.ebi.ac.uk/pub/databases/Pfam/current_release/Pfam-A.hmm.gz
 wget -c ftp://ftp.pantherdb.org/panther_library/current_release/PANTHER15.0_ascii.tgz
