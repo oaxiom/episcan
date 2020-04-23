@@ -8,6 +8,7 @@ Pfam-A.hmm.gz
 Pfam-A.hmm*
 pfam.txt
 funfam-hmm3.lib
+unused
 
 *.hmm
 *.hmm.h3f

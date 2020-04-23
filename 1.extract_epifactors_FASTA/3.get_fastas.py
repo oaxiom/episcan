@@ -8,33 +8,36 @@ hs_pep_fasta = genelist('../gencode/gencode.v32.pc_translations.fa.gz', format=f
 #mm_pep_fasta = g
 
 print(hs_pep_fasta)
-found = 0
-not_found = 0
 
 for filename in glob.glob('*.glb'):
     stub = os.path.split(filename)[1].replace('.glb', '')
     epifactors = glload(filename)
     epifactors = frozenset(epifactors['ensp'])
 
-    newf = []
+    found = []
+    not_found = []
     for i in hs_pep_fasta:
         t = i['name'].split('|')
         gene_symbol = t[6]
         ensp = t[0].split('.')[0]
-        
+
         if ensp in epifactors:
             new_name = '{0} {1}'.format(ensp, gene_symbol)
-            newf.append({'name': new_name, 'seq': i['seq']})    
-            found += 1
+            found.append({'name': new_name, 'seq': i['seq']})
         else:
-            not_found += 1
+            new_name = '{0} {1}'.format(ensp, gene_symbol)
+            not_found.append({'name': new_name, 'seq': i['seq']})
 
     gl = genelist()
-    gl.load_list(newf)
+    gl.load_list(found)
     gl.saveFASTA('{0}.fa'.format(stub), name='name')
 
-    print('Found    :', found)
-    print('Not found:', not_found)
+    gl = genelist()
+    gl.load_list(not_found)
+    gl.saveFASTA('{0}.notfound.fa'.format(stub), name='name')
+
+    print('Found    :', len(found))
+    print('Not found:', len(not_found))
 
 
 
