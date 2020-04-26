@@ -1,5 +1,6 @@
 # Custom
 gencode.v32.pc_translations.fa.gz
+gencode.vM24.pc_translations.fa.gz
 *.glb
 EpiGenes_main.csv
 *map.tsv
