@@ -113,8 +113,8 @@ epifactors_hg38.save('hs_epifactors.all.glb')
 epifactors_hg38 = epifactors_hg38.removeDuplicates('hgncid')
 end_len = len(epifactors_hg38)
 epifactors_hg38.sort('name')
-epifactors_hg38.saveTSV('hs_epifactors.filtered.tsv', key_order=['uniprot', 'ensp', 'name'])
-epifactors_hg38.save('hs_epifactors.filtered.glb')
+epifactors_hg38.saveTSV('hs_epifactors.readable.tsv', key_order=['uniprot', 'ensp', 'name'])
+#epifactors_hg38.save('hs_epifactors.filtered.glb')
 
 print('%s -> %s (cut %s)' % (start_len, end_len, start_len - end_len))
 
