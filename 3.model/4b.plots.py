@@ -90,12 +90,12 @@ for dom_idx, dom in enumerate(domain):
 
     optimal_idx = numpy.argmax(tpr - fpr)
     #print(tpr.shape, optimal_idx, tpr - fpr)
-    optimal_threshold = optimal_idx
+    optimal_threshold = 100-optimal_idx
 
     if max(tp) == 0: # usless;
         auc = 0.0
         elbow = 0.0
-        elbowE = 1e-100
+        elbowE = 1.0
         tpfp_ratio = 0
     elif max(fp) <= 0: # very good;
         auc = 1.0

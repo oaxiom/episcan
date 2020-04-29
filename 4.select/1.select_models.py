@@ -13,12 +13,12 @@ model_matrix = glload('../3.model/AUCtable.glb')
 doms_to_keep = []
 
 for model in model_matrix:
-    print(model)
-
-    if model['auc'] > 0.5:
+    if model['auc'] > 0.5 and model['TP/FP ratio'] > 0.3:
+        print(model)
         doms_to_keep.append(model)
         continue
 
+print('Kept {0} domains'.format(len(doms_to_keep)))
 
 # This will be the initial seed for the pools;
 gl = genelist()
