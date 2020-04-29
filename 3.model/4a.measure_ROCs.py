@@ -11,10 +11,9 @@ Round 1, For each domain, work out a dynamic threshold for each motif, and disca
 
 final_results = {}
 
-tp = genelist(filename='round2.epifactors.TP.txt', format=format.hmmer_domtbl)
-
 #########
 print('Doing T+')
+tp = genelist(filename='round2.epifactors.TP.txt', format=format.hmmer_domtbl)
 true_positives = {} # per domain;
 for hit in tp:
     domain = hit['dom_name']

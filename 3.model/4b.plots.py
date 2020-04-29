@@ -16,7 +16,6 @@ oh.close()
 auc_table = []
 
 for dom_idx, dom in enumerate(domain):
-    print(dom)
     # I need to work out the TP and FP for a range of thresholds:
 
     thresholds = numpy.arange(1, 100, 1) # powers of 10;
@@ -79,8 +78,8 @@ for dom_idx, dom in enumerate(domain):
 
     #tp.insert(0, max(tp)+1) # curve needs to be filled in for AUC score
     #fp.insert(0, max(fp)+1)
-    tp.append(0)
-    fp.append(0)
+    #tp.append(0)
+    #fp.append(0)
 
     #print(tp)
     #print(fp)
@@ -90,17 +89,18 @@ for dom_idx, dom in enumerate(domain):
     fpr = numpy.array(fp) / (max(fp)+1)
 
     optimal_idx = numpy.argmax(tpr - fpr)
-    optimal_threshold = 100-thresholds[optimal_idx-1]
+    #print(tpr.shape, optimal_idx, tpr - fpr)
+    optimal_threshold = optimal_idx
 
     if max(tp) == 0: # usless;
         auc = 0.0
         elbow = 0.0
-        elbowE = 1.0
+        elbowE = 1e-100
         tpfp_ratio = 0
-    elif max(fp) == 0: # very good;
+    elif max(fp) <= 0: # very good;
         auc = 1.0
         elbow = 1.0
-        elbowE = 1e-100 # super specific.
+        elbowE = 0.1 # super specific, so use a super low E
         tpfp_ratio = 100 # actually infinite?
     else:
         auc = sklearn.metrics.auc(fpr, tpr)
@@ -110,12 +110,13 @@ for dom_idx, dom in enumerate(domain):
 
     auc_table.append({'domain': dom, 'auc': auc, 'elbow': elbow, 'e': elbowE, 'TP/FP ratio': tpfp_ratio})
 
+    title = '{0} AUC={1:.2f} e={2}\nTP={3} FP={4}'.format(dom, auc, elbowE, max(tp), max(fp))
     fig = plot.figure(figsize=[2,2])
     ax = fig.add_subplot(111)
     fig.subplots_adjust(left=0.2, bottom=0.2)
     ax.scatter(fpr, tpr, s=6)
     ax.plot(fpr, tpr)
-    ax.set_title('{0} AUC={1:.2f} e={2}\nTP={3} FP={4}'.format(dom, auc, optimal_threshold, max(tp), max(fp)), fontsize=6)
+    ax.set_title(title, fontsize=6)
     ax.set_xlabel('False +', fontsize=6)
     ax.set_ylabel('True +', fontsize=6)
     ax.set_xlim([-0.05, 1.05])
@@ -125,6 +126,8 @@ for dom_idx, dom in enumerate(domain):
     ax.axvline(optimal_idx/100, c='grey', ls=':')
     fig.savefig('rocs/AUC_{0}.pdf'.format(dom))
     plot.close(fig)
+
+    print(title.replace('\n', ' '))
 
 aucgl = genelist()
 aucgl.load_list(auc_table)

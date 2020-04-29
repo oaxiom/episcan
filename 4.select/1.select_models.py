@@ -15,11 +15,9 @@ doms_to_keep = []
 for model in model_matrix:
     print(model)
 
-    if model['auc'] > 0.6:
+    if model['auc'] > 0.5:
         doms_to_keep.append(model)
         continue
-
-
 
 
 # This will be the initial seed for the pools;

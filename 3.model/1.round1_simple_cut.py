@@ -13,6 +13,9 @@ Basically, if they find the exact same proteins, we can trim them from the list
 model_matrix = glload('../2.determine_reqd_models/model_matrix.glb')
 all_models = model_matrix.getConditionNames()
 
+# Don't do this, as it seems better to preserve the domain complexity and filter at the ROC /E stage.
+
+'''
 # Now I need to work out the most senstiive one, and keep that:
 pfam = genelist(filename='../2.determine_reqd_models/pfam.txt', format=format.hmmer_domtbl)
 print(pfam)
@@ -64,12 +67,15 @@ for idx, score in enumerate(scores):
         print('Done {0}/{1}'.format(idx, todo))
 
 print(doms_to_keep)
+'''
+
+doms_to_keep = [{'name': i} for i in all_models]
 
 # This will be the initial seed for the pools;
 gl = genelist()
 gl.load_list(doms_to_keep)
-gl.sort('frequency')
-gl.reverse()
+#gl.sort('frequency')
+#gl.reverse()
 gl.save('domains_round1.glb')
 gl.saveTSV('domains_round1.txt', key_order=['name'])
 
