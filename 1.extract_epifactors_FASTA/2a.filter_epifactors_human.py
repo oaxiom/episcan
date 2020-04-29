@@ -56,7 +56,7 @@ filt = [ # Must be a literal match:
     'HDGFL2',
     'HIF1AN',
     'HSPA1A', 'HSPA1B',
-    'IKZF1',
+    'IKZF1','IKZF3',
     'JAK2',
     'MAX', 'MAZ',
     'MAP3K7', 'MAPKAPK3', 'MASTL', 'MYO1C', # Myosin?
@@ -89,7 +89,7 @@ filt = [ # Must be a literal match:
     'TAF2', 'TAF4', 'TAF6', 'TAF9',
     'TTBK1', 'TLK1', 'TLK2', 'TSSK6', 'TRRAP', 'TTK',
     'TFDP1',
-    'UBE2D3', 'UBE2T', 'UBR7',
+    'UBE2A', 'UBE2B', 'UBE2D1','UBE2E1','UBE2H','UBE2N','UBE2D3', 'UBE2T', 'UBR7', # UB system;
     'USP12', 'USP17L2',
     'USP21', 'USP22', 'USP3', 'USP46', 'USP49', 'USP7',
     'YWHAE', 'YY1',
