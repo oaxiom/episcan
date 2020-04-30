@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-import math, numpy, pickle, sklearn
+import math, numpy, pickle, sklearn, glob, sys, os
 from glbase3 import *
 import matplotlib.pyplot as plot
 
@@ -14,6 +14,8 @@ domain = pickle.load(oh)
 oh.close()
 
 auc_table = []
+
+[os.remove(f) for f in glob.glob('rocs/*.pdf')]
 
 for dom_idx, dom in enumerate(domain):
     # I need to work out the TP and FP for a range of thresholds:
