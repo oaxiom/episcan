@@ -52,7 +52,10 @@ filte = e.filter_low_expressed(0.9,1)
 detected = filte.removeDuplicates('name')
 print(detected.getColumns(['name'], strip_expn=True))
 print(e.getColumns(['name'], strip_expn=True))
-os.remove('undetected_by_hmmer.tsv')
+try:
+    os.remove('undetected_by_hmmer.tsv')
+except FileNotFoundError:
+    pass
 undetected = detected.map(genelist=e, key='name', logic='notright')
 if undetected:
     undetected = undetected.getColumns(['ensp', 'name'], strip_expn=True)
