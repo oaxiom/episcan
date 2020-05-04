@@ -11,6 +11,10 @@ pfam.txt
 funfam-hmm3.lib
 unused
 
+*.txt
+*.tsv
+*.pickle
+
 *..pickle
 *.hmm
 *.hmm.h3f
