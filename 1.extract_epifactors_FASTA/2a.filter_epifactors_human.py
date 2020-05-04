@@ -16,6 +16,11 @@ print(annot)
 
 epifactors_hg38 = epifactors_hg38.map(genelist=annot, key='hgncid')
 
+# These are just to get hte FASTA peptide files
+epifactors_hg38_unfiltered = epifactors_hg38.removeDuplicates('ensp')
+epifactors_hg38_unfiltered.saveTSV('hs_epifactors.unfiltered.tsv', key_order=['ensp', 'name'])
+epifactors_hg38_unfiltered.save('hs_epifactors.unfiltered.glb')
+
 start_len = len(epifactors_hg38)
 
 # I remove a selection of epifactors that I don't consider as epifactors!
@@ -26,7 +31,7 @@ filt = [ # Must be a literal match:
     'ACTR5', 'ACTR6', 'ACTR8',
     'AIRE',
     'ADNP',
-    'AEBP2', 'APEX1',
+    'AEBP2', 'APEX1','ARRB1',
     'ARNTL',
     'ANKRD32',
     'ATF2',
@@ -40,9 +45,9 @@ filt = [ # Must be a literal match:
     'CHEK1',
     'CHUK',
     'CIT',
-    'CSNK2A1',
-    'CTCF', 'CTCFL',
-    'DAPK3','DDX50', 'DPPA3',
+    'CSNK2A1', 'CRB2',
+    'CTCF', 'CTCFL', 'CLNS1A',
+    'DAPK3','DDX50', 'DPPA3', 'DDB2',
     'DPF1',
     'DND1',
     'E2F6',
@@ -50,24 +55,26 @@ filt = [ # Must be a literal match:
     'ENY2', # A TF
     'ERBB4', # Kinase
     'EXOSC1', 'EXOSC2', 'EXOSC3', 'EXOSC4', 'EXOSC5', 'EXOSC6', 'EXOSC7', 'EXOSC8', 'EXOSC9',
-    'FBL',
+    'FBL', 'FBRS', 'FBRSL1',
     'FOXA1', 'FOXO1', 'FOXP1', 'FOXP2', 'FOXP3', 'FOXP4',
     'GFI1', 'GFI1B', 'GATAD1',
     'GSG2',
-    'HLCS',
-    'HDGFL2', 'HMGB1',
+    'HLCS', 'HASPIN',
+    'HDGFL2', 'HMGB1', 'HINFP',
     'HIF1AN',
     'HSPA1A', 'HSPA1B',
     'IKZF1','IKZF3',
     'JAK2', 'JDP2',
     'MAX', 'MAZ',
     'MAP3K7', 'MAPKAPK3', 'MASTL', 'MYO1C', # Myosin?
-    'MGA',
+    'MGA', 'MST1',
     'MYSM1',
     'NAP1L4',
     'NEK6', 'NEK9', 'NEK8',
     'NFYC',
+    'PARG',
     'PAK2', 'PBK', 'PDP1', 'PDK1', 'PDK2', 'PDK3', 'PDK4', 'PKM', 'PKN1',
+    'PIWIL4', 'PRR14',
     'POGZ',
     'PPM1G', 'PPP2CA', 'PPP4C',
     'PRKAA1', 'PRKAA2', 'PRKAB1', 'PRKAB2', 'PRKAG1', 'PRKAG2', 'PRKAG3', 'PRKCA', 'PRKCB', 'PRKCD', 'PRKDC',
@@ -80,7 +87,7 @@ filt = [ # Must be a literal match:
     'RCC1',
     'RPS6KA3', 'RPS6KA4' ,'RPS6KA5',
     'REST',
-    'SENP3',
+    'SENP3', 'SENP1', 'SRSF3',
     'SKP1', 'STK4', 'STK31',
     'SF3B1', 'SF3B3', # Splicesomal member
     'SMEK1', 'SMEK2',
@@ -98,9 +105,12 @@ filt = [ # Must be a literal match:
     'UBR2', 'UBR5', 'USP11',
     'USP16',
     'USP44',
+    'WSB2',
     'YWHAE', 'YY1',
     'VRK1',
     'ZCWPW1', 'ZFP57', 'ZMYM3', 'ZMYND8', 'ZNF516',
+    'ZNF217', 'ZNF532', 'ZNF592', 'ZNF687', 'ZNF711',
+    'ZHX1', 'ZMYM2',
     ]
 
 newe = []

@@ -92,7 +92,7 @@ for dom_idx, dom in enumerate(domain):
 
     optimal_idx = numpy.argmax(tpr - fpr)
     #print(tpr.shape, optimal_idx, tpr - fpr)
-    optimal_threshold = 100-optimal_idx
+    optimal_threshold = optimal_idx
 
     if max(tp) == 0: # usless;
         auc = 0.0
@@ -102,8 +102,13 @@ for dom_idx, dom in enumerate(domain):
     elif max(fp) <= 0: # very good;
         auc = 1.0
         elbow = 1.0
-        elbowE = 0.1 # super specific, so use a super low E
+        elbowE = 0.1 # super specific, so use a super high E
         tpfp_ratio = 100 # actually infinite?
+    elif tpfp_ratio > 1.0: # Probably also pretty good, but the E is a bit looser, set to the best E
+        auc = 1.0
+        elbow = 1.0
+        elbowE = domain[dom]['tp_bestE']['max'] # i.e. smallest valid E
+        tpfp_ratio = max(tp) / max(fp)
     else:
         auc = sklearn.metrics.auc(fpr, tpr)
         elbow = 1
@@ -112,21 +117,23 @@ for dom_idx, dom in enumerate(domain):
 
     auc_table.append({'domain': dom, 'auc': auc, 'elbow': elbow, 'e': elbowE, 'TP/FP ratio': tpfp_ratio})
 
-    title = '{0} AUC={1:.2f} e={2}\nTP={3} FP={4}'.format(dom, auc, elbowE, max(tp), max(fp))
+    title = '{0} AUC={1:.2f} e={2}\nTP={3} FP={4}; TP/FP={5:.2f}'.format(dom, auc, elbowE, max(tp), max(fp), tpfp_ratio)
     fig = plot.figure(figsize=[2,2])
     ax = fig.add_subplot(111)
     fig.subplots_adjust(left=0.2, bottom=0.2)
     ax.scatter(fpr, tpr, s=6)
     ax.plot(fpr, tpr)
     ax.set_title(title, fontsize=6)
-    ax.set_xlabel('False +', fontsize=6)
+    ax.set_xlabel('False + & False -', fontsize=6)
     ax.set_ylabel('True +', fontsize=6)
     ax.set_xlim([-0.05, 1.05])
     ax.set_ylim([-0.05, 1.05])
     plot.xticks(fontsize=6)
     plot.yticks(fontsize=6)
-    ax.axvline(optimal_idx/100, c='grey', ls=':')
-    fig.savefig('rocs/AUC_{0}.pdf'.format(dom))
+    if tpfp_ratio != 0.0:
+        ax.axvline((-math.log10(elbowE)/100), c='steelblue', ls=':', lw=1.0)
+        ax.axvline(optimal_idx/100, c='grey', ls=':', lw=0.5)
+    fig.savefig('rocs/AUC_{0}.pdf'.format(dom.replace('/', '-')))
     plot.close(fig)
 
     print(title.replace('\n', ' '))

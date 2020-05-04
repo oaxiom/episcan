@@ -32,10 +32,15 @@ for domain in true_positives:
     num_hits = len(true_positives[domain])
     for i, e in enumerate(sorted(true_positives[domain])):
         if domain not in final_results:
-            final_results[domain] = {'tp': {'e': [], 'tp': []}, 'fp': {'e': [], 'fp': []}}
+            final_results[domain] = {
+                'tp': {'e': [], 'tp': []},
+                'fp': {'e': [], 'fp': []}
+                }
 
         final_results[domain]['tp']['e'].append(e)
         final_results[domain]['tp']['tp'].append(i)
+
+    final_results[domain]['tp_bestE'] = {'min': min(final_results[domain]['tp']['e']), 'max': max(final_results[domain]['tp']['e'])}
 
 #for d in final_results:
 #    print(d)
@@ -63,6 +68,8 @@ for domain in false_positives:
     for i, e in enumerate(sorted(false_positives[domain])):
         final_results[domain]['fp']['e'].append(e)
         final_results[domain]['fp']['fp'].append(i)
+
+    final_results[domain]['fp_bestE'] = {'min': min(final_results[domain]['tp']['e']), 'max': max(final_results[domain]['tp']['e'])}
 
 #for d in final_results:
 #    print(d)
