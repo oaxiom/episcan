@@ -13,7 +13,7 @@ model_matrix = glload('../3.model/AUCtable.glb')
 doms_to_keep = []
 
 for model in model_matrix:
-    if model['auc'] > 0.5 and model['TP/FP ratio'] > 0.3:
+    if model['auc'] >= 0.7 and model['TP/FP ratio'] >= 2.0:
         print(model)
         doms_to_keep.append(model)
         continue

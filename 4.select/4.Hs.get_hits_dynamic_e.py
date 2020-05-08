@@ -25,7 +25,7 @@ for hit in hmmer_search:
 
     e = float(hit['e'])
 
-    print(hit, e, dynamicE[domain], e < dynamicE[domain])
+    #print(hit, e, dynamicE[domain], e < dynamicE[domain])
     if e < dynamicE[domain]:
         spet = hit['peptide'].split('|')
         if '-' in spet[6]: # name
@@ -41,6 +41,7 @@ for hit in hmmer_search:
 gl = genelist()
 gl.load_list(matches)
 gl.saveTSV('Hs.matches.tsv', key_order=['ensg', 'ensp', 'name'])
+gl.save('Hs.matches.glb')
 
 # Unfiltered result:
 

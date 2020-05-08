@@ -39,8 +39,12 @@ for domain in true_positives:
 
         final_results[domain]['tp']['e'].append(e)
         final_results[domain]['tp']['tp'].append(i)
-
-    final_results[domain]['tp_bestE'] = {'min': min(final_results[domain]['tp']['e']), 'max': max(final_results[domain]['tp']['e'])}
+    # 1.10.10.10/FF/170430
+    final_results[domain]['tp_bestE'] = {
+        'min': min(final_results[domain]['tp']['e']),
+        'max': max(final_results[domain]['tp']['e'])
+        }
+    print(domain, final_results[domain]['tp_bestE'])
 
 #for d in final_results:
 #    print(d)
