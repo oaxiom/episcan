@@ -14,6 +14,7 @@ domain = pickle.load(oh)
 oh.close()
 
 auc_table = []
+raw_table = []
 auc_data = []
 
 for dom_idx, dom in enumerate(domain):
@@ -24,7 +25,7 @@ for dom_idx, dom in enumerate(domain):
     tp = []
     fp = []
 
-    #print([i for i in zip(domain[dom]['fp']['e'], domain[dom]['fp']['fp'])])
+    print([i for i in zip(domain[dom]['fp']['e'], domain[dom]['fp']['fp'])])
 
     for threshold in thresholds:
         #print(threshold)
@@ -32,8 +33,8 @@ for dom_idx, dom in enumerate(domain):
 
         toadd = None
         for i, e in enumerate(domain[dom]['tp']['e']):
-            if e > t:
-                toadd = domain[dom]['tp']['tp'][i]
+            if e >= t:
+                toadd = (domain[dom]['tp']['tp'][i]+1)
                 #print(e, t, toadd)
                 break
         if toadd:
@@ -47,8 +48,8 @@ for dom_idx, dom in enumerate(domain):
 
         toadd = None
         for i, e in enumerate(domain[dom]['fp']['e']):
-            if e > t:
-                toadd = domain[dom]['fp']['fp'][i]
+            if e >= t:
+                toadd = (domain[dom]['fp']['fp'][i]+1)
                 #print(e, t, toadd)
                 break
         if toadd:
@@ -97,6 +98,10 @@ for dom_idx, dom in enumerate(domain):
     else:
         tpfp_ratio = 100
 
+    auc = sklearn.metrics.auc(fpr, tpr)
+
+    raw_table.append({'domain': dom, 'auc': auc, 'e': max([domain[dom]['tp_bestE']['max'], 1e-100]), 'TP/FP ratio': tpfp_ratio, 'TP': max(tp), 'FP': max(fp)})
+
     if max(tp) == 0: # usless;
         print('max(tp) == 0')
         auc = 0.0
@@ -116,7 +121,6 @@ for dom_idx, dom in enumerate(domain):
         elbowE = max([domain[dom]['tp_bestE']['max'], 1e-100]) # i.e. smallest valid E or 1e-100
     else: # see if AUC thinks it's best:
         print('AUC')
-        auc = sklearn.metrics.auc(fpr, tpr)
         elbow = 1
         elbowE = float('1e-{0}'.format(optimal_threshold))
         tpfp_ratio = max(tp) / max(fp)
@@ -125,6 +129,20 @@ for dom_idx, dom in enumerate(domain):
     auc_table.append({'domain': dom, 'auc': auc, 'elbow': elbow, 'e': elbowE, 'TP/FP ratio': tpfp_ratio, 'TP': max(tp), 'FP': max(fp)})
     title = '{0} AUC={1:.2f} e={2}\nTP={3} FP={4}; TP/FP={5:.2f}'.format(dom, auc, elbowE, max(tp), max(fp), tpfp_ratio)
     print(title.replace('\n', ' '))
+
+aucgl = genelist()
+aucgl.load_list(auc_table)
+aucgl.sort('auc')
+aucgl.reverse()
+aucgl.saveTSV('AUCtable.tsv')
+aucgl.save('AUCtable.glb')
+
+aucgl = genelist()
+aucgl.load_list(raw_table)
+aucgl.sort('auc')
+aucgl.reverse()
+aucgl.saveTSV('AUCtable_raw.tsv')
+aucgl.save('AUCtable_raw.glb')
 
 print('Drawing...')
 
@@ -150,9 +168,4 @@ for d, t in zip(auc_data, auc_table):
     fig.savefig('rocs/AUC_{0}.pdf'.format(t['domain'].replace('/', '-')))
     plot.close(fig)
 
-aucgl = genelist()
-aucgl.load_list(auc_table)
-aucgl.sort('auc')
-aucgl.reverse()
-aucgl.saveTSV('AUCtable.tsv')
-aucgl.save('AUCtable.glb')
+
