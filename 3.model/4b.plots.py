@@ -25,7 +25,7 @@ for dom_idx, dom in enumerate(domain):
     tp = []
     fp = []
 
-    print([i for i in zip(domain[dom]['fp']['e'], domain[dom]['fp']['fp'])])
+    #print([i for i in zip(domain[dom]['fp']['e'], domain[dom]['fp']['fp'])])
 
     for threshold in thresholds:
         #print(threshold)
@@ -34,7 +34,7 @@ for dom_idx, dom in enumerate(domain):
         toadd = None
         for i, e in enumerate(domain[dom]['tp']['e']):
             if e >= t:
-                toadd = (domain[dom]['tp']['tp'][i]+1)
+                toadd = i+1 #(domain[dom]['tp']['tp'][i]+1)
                 #print(e, t, toadd)
                 break
         if toadd:
@@ -48,9 +48,10 @@ for dom_idx, dom in enumerate(domain):
 
         toadd = None
         for i, e in enumerate(domain[dom]['fp']['e']):
+            #print(e, t, toadd, i)
             if e >= t:
-                toadd = (domain[dom]['fp']['fp'][i]+1)
-                #print(e, t, toadd)
+                toadd = i+1
+                #print('Break', e, t, toadd, i)
                 break
         if toadd:
             fp.append(toadd)
@@ -112,17 +113,17 @@ for dom_idx, dom in enumerate(domain):
         print('max(fp) <= 0')
         auc = 1.0
         elbow = 1.0
-        elbowE = max([domain[dom]['tp_bestE']['max'], 1e-100]) # super specific, so use the best matching E
+        elbowE = min([0.01, max([domain[dom]['tp_bestE']['max']*100, 1e-100])]) # super specific, so use the best matching E
         tpfp_ratio = 100 # actually infinite?
-    elif tpfp_ratio > 2.0: # Probably also pretty good, but the E is a bit looser, set to the best E
+    elif tpfp_ratio >= 2.0: # Probably also pretty good, but the E is a bit looser, set to the best E
         print('TP/FP ratio')
         auc = 1.0
         elbow = 1.0
-        elbowE = max([domain[dom]['tp_bestE']['max'], 1e-100]) # i.e. smallest valid E or 1e-100
+        elbowE = min([0.01, max([domain[dom]['tp_bestE']['max']*100, 1e-100])]) # i.e. smallest valid E or 1e-100
     else: # see if AUC thinks it's best:
         print('AUC')
         elbow = 1
-        elbowE = float('1e-{0}'.format(optimal_threshold))
+        elbowE = min([0.01,float('1e-{0}'.format(optimal_threshold))*100])
         tpfp_ratio = max(tp) / max(fp)
 
     auc_data.append({'fpr': fpr, 'tpr': tpr})

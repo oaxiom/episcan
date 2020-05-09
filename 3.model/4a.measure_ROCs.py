@@ -44,7 +44,7 @@ for domain in true_positives:
         'min': min(final_results[domain]['tp']['e']),
         'max': max(final_results[domain]['tp']['e'])
         }
-    print(domain, final_results[domain]['tp_bestE'], final_results[domain])
+    #print(domain, final_results[domain]['tp_bestE'])
 
 #for d in final_results:
 #    print(d)
