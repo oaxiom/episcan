@@ -3,7 +3,7 @@ import sys, os
 from glbase3 import *
 user_path = os.path.expanduser("~")
 
-form = {'force_tsv': False, 'uniprot': 12}
+form = {'force_tsv': False, 'mgiid': 10}
 
 # extract the list of domains
 epifactors_mm10 = genelist(filename='EpiGenes_main.csv', format=form)
@@ -11,17 +11,17 @@ epifactors_mm10 = genelist(filename='EpiGenes_main.csv', format=form)
 # First, fix the name key, which is wrong in the EpiGenes table
 annot = glload('../gencode/mm_annot.glb')
 
-print(epifactors_hg38)
+print(epifactors_mm10)
 print(annot)
 
-epifactors_hg38 = epifactors_hg38.map(genelist=annot, key='hgncid')
+epifactors_mm10 = epifactors_mm10.map(genelist=annot, key='mgiid')
 
 # These are just to get hte FASTA peptide files
-epifactors_hg38_unfiltered = epifactors_hg38.removeDuplicates('ensp')
-epifactors_hg38_unfiltered.saveTSV('hs_epifactors.unfiltered.tsv', key_order=['ensp', 'name'])
-epifactors_hg38_unfiltered.save('hs_epifactors.unfiltered.glb')
+epifactors_mm10_unfiltered = epifactors_mm10.removeDuplicates('ensp')
+epifactors_mm10_unfiltered.saveTSV('hs_epifactors.unfiltered.tsv', key_order=['ensp', 'name'])
+epifactors_mm10_unfiltered.save('hs_epifactors.unfiltered.glb')
 
-start_len = len(epifactors_hg38)
+start_len = len(epifactors_mm10)
 
 # Also filter kinases and phosphatases
 filt = [ # Must be a literal match:
@@ -114,6 +114,11 @@ filt = [ # Must be a literal match:
     ]
 
 # Do a simple convert from the human to mouse;
+newfilt = []
+for i in filt:
+    newfilt.append(i[0] + i[1:].lower())
+filt = newfilt
+
 newe = []
 for e in epifactors_mm10:
     if True not in [f == e['name'] for f in filt]:
@@ -127,10 +132,10 @@ epifactors_mm10.saveTSV('mm_epifactors.all.tsv', key_order=['ensp', 'name'])
 epifactors_mm10.save('mm_epifactors.all.glb')
 
 # These are the more useful human-readable versions, unqique for hgncid
-epifactors_mm10 = epifactors_mm10.removeDuplicates('hgncid')
+epifactors_mm10 = epifactors_mm10.removeDuplicates('mgiid')
 end_len = len(epifactors_mm10)
 epifactors_mm10.sort('name')
-epifactors_mm10.saveTSV('mm_epifactors.readable.tsv', key_order=['uniprot', 'ensp', 'name'])
+epifactors_mm10.saveTSV('mm_epifactors.readable.tsv', key_order=['mgiid', 'ensp', 'name'])
 #epifactors_mm10.save('hs_epifactors.filtered.glb')
 
 print('%s -> %s (cut %s)' % (start_len, end_len, start_len - end_len))
