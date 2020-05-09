@@ -1,79 +1,119 @@
 #!/usr/bin/env python3
+import sys, os
 from glbase3 import *
 user_path = os.path.expanduser("~")
 
-form = {'force_tsv': False, 'name': 9} # Approved MGI_symbol
+form = {'force_tsv': False, 'uniprot': 12}
 
 # extract the list of domains
-epifactors_mm10 = genelist(filename='EpiGenes_main.20150522.csv', format=form)
+epifactors_mm10 = genelist(filename='EpiGenes_main.csv', format=form)
 
 # First, fix the name key, which is wrong in the EpiGenes table
-annot = genelist(filename='mm_ensp_name.txt', format={'force_tsv': True, 'ensg': 0, 'ensp': 1, 'name': 2}) 
+annot = glload('../gencode/mm_annot.glb')
 
-# trim the HNNC: from the ENSP accession
-annot = annot.removeDuplicates('ensp') # remove the ' ' entries
-annot.save('annot_mm10.glb')
-
-print(epifactors_mm10)
+print(epifactors_hg38)
 print(annot)
 
-epifactors_mm10 = epifactors_mm10.map(genelist=annot, key='name')
+epifactors_hg38 = epifactors_hg38.map(genelist=annot, key='hgncid')
 
-#TFs = glload('all_tfs.glb') # bad ideas as e.g. EP300 is in there 
-#DUDEDB = glload('all_dudedb.glb')
-start_len = len(epifactors_mm10)
-# These two are a bad idea, e.g. KDM2B has an E-box. Best just not to chose these domains.
-# These two are a bad idea, e.g. KDM2B has an E-box. Best just not to chose these domains...
-# cut known TFs:
-#epifactors_hg38 = TFs.map(genelist=epifactors_hg38, key='name', logic='notright')
-# cut known UB and DEUB
-#epifactors_hg38 = DUDEDB.map(genelist=epifactors_hg38, key='name', logic='notright')
+# These are just to get hte FASTA peptide files
+epifactors_hg38_unfiltered = epifactors_hg38.removeDuplicates('ensp')
+epifactors_hg38_unfiltered.saveTSV('hs_epifactors.unfiltered.tsv', key_order=['ensp', 'name'])
+epifactors_hg38_unfiltered.save('hs_epifactors.unfiltered.glb')
+
+start_len = len(epifactors_hg38)
 
 # Also filter kinases and phosphatases
-filt = [ # Must be a literal match:   
+filt = [ # Must be a literal match:
     '#',
-    'Actb', 
-    'Actl6a', 'Actl6b', 'Actr3b',
-    'Actr5', 'Actr6', 'Actr8', 
-    'Ankrd32',
-    'Atm',
-    'Atr',
-    'Aurka', 'Aurkb', 'Aurkc',
-    'Bub1','Bckdk',
-    '0610010K14Rik', # 'C17orf49' in human # MYB TF
-    'Cdk1', 'Cdk2', 'Cdk3-ps', 'Cdk5', 'Cdk7', 'Cdk9', 'Cdk17',
-    'Cenpc1',
-    'Chek1',
-    'Chuk',
-    'Cit',
-    'Csnk2a1', 
-    'Ctcf', 'Ctcfl', 
-    'Dapk3',
-    'Eny2', # A TF
-    'Erbb4', # Kinase
-    'Exosc1', 'Exosc2', 'Exosc3', 'Exosc4', 'Exosc5', 'Exosc6', 'Exosc7', 'Exosc8', 'Exosc9',
-    'Foxa1', 'Foxo1', 'Foxp1', 'Foxp2', 'Foxp3', 'Foxp4',
-    'Gfi1', 'Gfi1b',
-    'Gsg2', # A kinase
-    'Jak2',    
-    'Map3k7', 'Mapkapk3', 
-    'Mastl', # A kinase 
-    'Myo1c', # Myosin?
-    'Nek6', 'Nek8', 'Nek9',
-    'Pak2', 'Pbk', 'Pdp1', 'Pdk1', 'Pdk2', 'Pdk3', 'Pdk4', 'Pkm', 'Pkn1', 
-    'Ppm1g', 'Ppp2ca', 'Ppp4c', 
-    'Prkaa1', 'Prkaa2', 'Prkab1', 'Prkab2', 'Prkag1', 'Prkag2', 'Prkag3', 'Prkca', 'Prkcb', 'Prkcd', 'Prkdc', 
-    'Rps6ka3', 'Rps6ka4' ,'Rps6ka5',
-    'Rest',
-    'Akp1a', # SKP1 in human 
-    'Stk4', 'Stk31',
-    'Sf3b1', 'Sf3b3', # Splicesomal member
-    'Smek1', 'Smek2',
-    'Snai2',
-    'Ttbk1', 'Tlk1', 'Tlk2', 'Tssk6', 'Trrap', 'Ttk',
-    'Vrk1',    
+    'ACTB',
+    'ACTL6A', 'ACTL6B', 'ACTR3B',
+    'ACTR5', 'ACTR6', 'ACTR8',
+    'AIRE',
+    'ADNP',
+    'AEBP2', 'APEX1','ARRB1',
+    'ARNTL',
+    'ANKRD32',
+    'ATF2',
+    'ATM',
+    'ATR',
+    'AURKA', 'AURKB', 'AURKC',
+    'BUB1', 'BCKDK',
+    'C17orf49', # MYB TF
+    'CDK1', 'CDK2', 'CDK3', 'CDK5', 'CDK7', 'CDK9', 'CDK17', 'CDC6',
+    'CENPC',
+    'CHEK1',
+    'CHUK',
+    'CIT',
+    'CSNK2A1', 'CRB2',
+    'CTCF', 'CTCFL', 'CLNS1A',
+    'DAPK3','DDX50', 'DPPA3', 'DDB2',
+    'DPF1',
+    'DND1',
+    'E2F6',
+    'ELP5',
+    'ENY2', # A TF
+    'ERBB4', # Kinase
+    'EXOSC1', 'EXOSC2', 'EXOSC3', 'EXOSC4', 'EXOSC5', 'EXOSC6', 'EXOSC7', 'EXOSC8', 'EXOSC9',
+    'FBL', 'FBRS', 'FBRSL1',
+    'FOXA1', 'FOXO1', 'FOXP1', 'FOXP2', 'FOXP3', 'FOXP4',
+    'GFI1', 'GFI1B', 'GATAD1',
+    'GSG2',
+    'HLCS', 'HASPIN',
+    'HDGFL2', 'HMGB1', 'HINFP',
+    'HIF1AN',
+    'HSPA1A', 'HSPA1B',
+    'IKZF1','IKZF3',
+    'JAK2', 'JDP2',
+    'MAX', 'MAZ',
+    'MAP3K7', 'MAPKAPK3', 'MASTL', 'MYO1C', # Myosin?
+    'MGA', 'MST1',
+    'MYSM1',
+    'NAP1L4',
+    'NEK6', 'NEK9', 'NEK8',
+    'NFYC',
+    'PARG',
+    'PAK2', 'PBK', 'PDP1', 'PDK1', 'PDK2', 'PDK3', 'PDK4', 'PKM', 'PKN1',
+    'PIWIL4', 'PRR14',
+    'POGZ',
+    'PPM1G', 'PPP2CA', 'PPP4C',
+    'PRKAA1', 'PRKAA2', 'PRKAB1', 'PRKAB2', 'PRKAG1', 'PRKAG2', 'PRKAG3', 'PRKCA', 'PRKCB', 'PRKCD', 'PRKDC',
+    'PRPF31',
+    'PSIP1',
+    'RAG2',
+    'RAI1',
+    'RARA',
+    'RB1',
+    'RCC1',
+    'RPS6KA3', 'RPS6KA4' ,'RPS6KA5',
+    'REST',
+    'SENP3', 'SENP1', 'SRSF3',
+    'SKP1', 'STK4', 'STK31',
+    'SF3B1', 'SF3B3', # Splicesomal member
+    'SMEK1', 'SMEK2',
+    'SFMBT2',
+    'SFPQ',
+    'SRCAP',
+    'SNAI1', 'SNAI2',
+    'SP1',
+    'TAF2', 'TAF4', 'TAF6', 'TAF9', 'TAF12', 'TAF6L', 'TAF7', 'TAF9B',
+    'TTBK1', 'TLK1', 'TLK2', 'TSSK6', 'TRRAP', 'TTK',
+    'TFDP1',
+    'UBE2A', 'UBE2B', 'UBE2D1','UBE2E1','UBE2H','UBE2N','UBE2D3', 'UBE2T', 'UBR7', # UB system;
+    'USP12', 'USP17L2',
+    'USP21', 'USP22', 'USP3', 'USP46', 'USP49', 'USP7',
+    'UBR2', 'UBR5', 'USP11',
+    'USP16',
+    'USP44',
+    'WSB2',
+    'YWHAE', 'YY1',
+    'VRK1',
+    'ZCWPW1', 'ZFP57', 'ZMYM3', 'ZMYND8', 'ZNF516',
+    'ZNF217', 'ZNF532', 'ZNF592', 'ZNF687', 'ZNF711',
+    'ZHX1', 'ZMYM2',
     ]
 
+# Do a simple convert from the human to mouse;
 newe = []
 for e in epifactors_mm10:
     if True not in [f == e['name'] for f in filt]:
@@ -83,17 +123,15 @@ epifactors_mm10.load_list(newe)
 
 # These are just to get hte FASTA peptide files
 epifactors_mm10 = epifactors_mm10.removeDuplicates('ensp')
-epifactors_mm10.saveTSV('epifactors_mm10.all.tsv', key_order=['ensp', 'name'])
-epifactors_mm10.save('epifactors_mm10.all.glb')
+epifactors_mm10.saveTSV('mm_epifactors.all.tsv', key_order=['ensp', 'name'])
+epifactors_mm10.save('mm_epifactors.all.glb')
 
 # These are the more useful human-readable versions, unqique for hgncid
-epifactors_mm10 = epifactors_mm10.removeDuplicates('name')
+epifactors_mm10 = epifactors_mm10.removeDuplicates('hgncid')
 end_len = len(epifactors_mm10)
 epifactors_mm10.sort('name')
-epifactors_mm10.saveTSV('epifactors_mm10.filtered.tsv', key_order=['ensp', 'name'])
-epifactors_mm10.save('epifactors_mm10.filtered.glb')
+epifactors_mm10.saveTSV('mm_epifactors.readable.tsv', key_order=['uniprot', 'ensp', 'name'])
+#epifactors_mm10.save('hs_epifactors.filtered.glb')
 
 print('%s -> %s (cut %s)' % (start_len, end_len, start_len - end_len))
-
-
 

@@ -129,7 +129,6 @@ for dom_idx, dom in enumerate(domain):
         pass_criteria = 'AUC'
         elbowE = min([0.1,float('1e-{0}'.format(optimal_threshold))*100])
         # TP/FP ratio should be the numebr at that threshold!
-        print(tp, fp)
         tp = tp[optimal_threshold]
         fp = fp[optimal_threshold]
         tpfp_ratio = tp / fp
