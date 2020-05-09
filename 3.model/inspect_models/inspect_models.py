@@ -9,15 +9,17 @@ import os
 from glbase3 import *
 
 todo = [
-    'EED', # No good domains
-    'SUZ12',
-    'ASH2L',
+    #'ASH2L', # Fixed
     'ATF7IP',
-    'BAP1',
-    'CHAF1B',
-    'SET',
+    'ATXN7',
+    #'BAP1', # Fixed
+    #'CHAF1B', # Fixed;
+    'EED', # No good domains
+    'RBBP5',
+    #'SUZ12', # Fixed
+    #'SET', # Fixed
     'TET2',
-    'TEX10',
+    #'TEX10', #Fixed
     ]
 
 unfiltered_auc = glload('../AUCtable_raw.glb')

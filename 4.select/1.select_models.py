@@ -12,10 +12,23 @@ model_matrix = glload('../3.model/AUCtable.glb')
 
 doms_to_keep = []
 
+passed_by = {}
+
 for model in model_matrix:
-    if model['auc'] >= 0.7 and model['TP/FP ratio'] >= 2.0:
+    if model['TP/FP ratio'] >= 100.0:
         print(model)
         doms_to_keep.append(model)
+        if model['pass_criteria'] not in passed_by:
+            passed_by[model['pass_criteria']] =0
+        passed_by[model['pass_criteria']] += 1
+        continue
+
+    if model['auc'] >= 0.8 and model['TP/FP ratio'] > 3.0:
+        print(model)
+        doms_to_keep.append(model)
+        if model['pass_criteria'] not in passed_by:
+            passed_by[model['pass_criteria']] =0
+        passed_by[model['pass_criteria']] += 1
         continue
 
 print('Kept {0} domains'.format(len(doms_to_keep)))
@@ -25,5 +38,7 @@ gl = genelist()
 gl.load_list(doms_to_keep)
 gl.saveTSV('passed_domains.tsv', key_order=['domain'])
 
-
+print()
+for k in passed_by:
+    print('{0}\t: {1}'.format(k, passed_by[k]))
 

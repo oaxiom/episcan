@@ -28,14 +28,12 @@ for dom_idx, dom in enumerate(domain):
     #print([i for i in zip(domain[dom]['fp']['e'], domain[dom]['fp']['fp'])])
 
     for threshold in thresholds:
-        #print(threshold)
         t = 10**-int(threshold)
 
         toadd = None
         for i, e in enumerate(domain[dom]['tp']['e']):
             if e >= t:
-                toadd = i+1 #(domain[dom]['tp']['tp'][i]+1)
-                #print(e, t, toadd)
+                toadd = i+1
                 break
         if toadd:
             tp.append(toadd)
@@ -48,10 +46,8 @@ for dom_idx, dom in enumerate(domain):
 
         toadd = None
         for i, e in enumerate(domain[dom]['fp']['e']):
-            #print(e, t, toadd, i)
             if e >= t:
                 toadd = i+1
-                #print('Break', e, t, toadd, i)
                 break
         if toadd:
             fp.append(toadd)
@@ -61,6 +57,11 @@ for dom_idx, dom in enumerate(domain):
             except IndexError:
                 #fp.append(fp[0])
                 fp.append(-50)
+
+    # In the last column, make sure all the TP and FP are added properly:
+    # For example the TET domain all E-values are <1e-100, so it gets a score of 0
+    tp.insert(0, len(domain[dom]['tp']['e']))
+    fp.insert(0, len(domain[dom]['fp']['e']))
 
     # reset the -50's to max vals:
     newfp = []
@@ -104,31 +105,38 @@ for dom_idx, dom in enumerate(domain):
     raw_table.append({'domain': dom, 'auc': auc, 'e': max([domain[dom]['tp_bestE']['max'], 1e-100]), 'TP/FP ratio': tpfp_ratio, 'TP': max(tp), 'FP': max(fp)})
 
     if max(tp) == 0: # usless;
-        print('max(tp) == 0')
+        pass_criteria = 'max(tp) == 0'
         auc = 0.0
-        elbow = 0.0
         elbowE = 1.0
         tpfp_ratio = 0
+        tp = max(tp)
+        fp = max(fp)
     elif max(fp) <= 0: # very good;
-        print('max(fp) <= 0')
+        pass_criteria = 'max(fp) == 0'
         auc = 1.0
-        elbow = 1.0
-        elbowE = min([0.01, max([domain[dom]['tp_bestE']['max']*100, 1e-100])]) # super specific, so use the best matching E
-        tpfp_ratio = 100 # actually infinite?
-    elif tpfp_ratio >= 2.0: # Probably also pretty good, but the E is a bit looser, set to the best E
-        print('TP/FP ratio')
+        elbowE = min([0.1,
+            max([domain[dom]['tp_bestE']['max']*100, 1e-100])
+            ]) # super specific, so use the best matching E
+        tp = max(tp)
+        fp = max(fp)
+    elif tpfp_ratio >= 3.0: # Probably also pretty good, but the E is a bit looser, set to the best E
+        pass_criteria = 'TP/FP ratio'
         auc = 1.0
-        elbow = 1.0
-        elbowE = min([0.01, max([domain[dom]['tp_bestE']['max']*100, 1e-100])]) # i.e. smallest valid E or 1e-100
+        elbowE = min([0.1, max([domain[dom]['tp_bestE']['max']*100, 1e-100])]) # i.e. smallest valid E or 1e-100
+        tp = max(tp)
+        fp = max(fp)
     else: # see if AUC thinks it's best:
-        print('AUC')
-        elbow = 1
-        elbowE = min([0.01,float('1e-{0}'.format(optimal_threshold))*100])
-        tpfp_ratio = max(tp) / max(fp)
+        pass_criteria = 'AUC'
+        elbowE = min([0.1,float('1e-{0}'.format(optimal_threshold))*100])
+        # TP/FP ratio should be the numebr at that threshold!
+        print(tp, fp)
+        tp = tp[optimal_threshold]
+        fp = fp[optimal_threshold]
+        tpfp_ratio = tp / fp
 
     auc_data.append({'fpr': fpr, 'tpr': tpr})
-    auc_table.append({'domain': dom, 'auc': auc, 'elbow': elbow, 'e': elbowE, 'TP/FP ratio': tpfp_ratio, 'TP': max(tp), 'FP': max(fp)})
-    title = '{0} AUC={1:.2f} e={2}\nTP={3} FP={4}; TP/FP={5:.2f}'.format(dom, auc, elbowE, max(tp), max(fp), tpfp_ratio)
+    auc_table.append({'domain': dom, 'auc': auc, 'e': elbowE, 'TP/FP ratio': tpfp_ratio, 'TP': tp, 'FP': fp, 'pass_criteria': pass_criteria})
+    title = '{0} AUC={1:.2f} e={2}\nTP={3} FP={4} TP/FP={5:.2f} pass_criteria={6}'.format(dom, auc, elbowE, tp, fp, tpfp_ratio, pass_criteria)
     print(title.replace('\n', ' '))
 
 aucgl = genelist()
@@ -150,7 +158,7 @@ print('Drawing...')
 [os.remove(f) for f in glob.glob('rocs/*.pdf')]
 
 for d, t in zip(auc_data, auc_table):
-    title = '{0} AUC={1:.2f} e={2}\nTP={3} FP={4}; TP/FP={5:.2f}'.format(t['domain'], t['auc'], t['e'], t['TP'], t['FP'], t['TP/FP ratio'])
+    title = '{0} AUC={1:.2f} e={2}\nTP={3} FP={4} TP/FP={5:.2f}'.format(t['domain'], t['auc'], t['e'], t['TP'], t['FP'], t['TP/FP ratio'])
     fig = plot.figure(figsize=[2,2])
     ax = fig.add_subplot(111)
     fig.subplots_adjust(left=0.2, bottom=0.2)
