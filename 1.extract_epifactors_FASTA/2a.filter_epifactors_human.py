@@ -113,6 +113,10 @@ filt = [ # Must be a literal match:
     'ZHX1', 'ZMYM2',
     ]
 
+dudedb = set(glload('../dudedb/dudedb-Hs.glb')['name'])
+
+filt = set(filt + list(dudedb))
+
 newe = []
 for e in epifactors_hg38:
     if True not in [f == e['name'] for f in filt]:

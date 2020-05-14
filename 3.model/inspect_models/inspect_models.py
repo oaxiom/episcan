@@ -9,16 +9,18 @@ import os
 from glbase3 import *
 
 todo = [
-    #'ASH2L', # Fixed
+    'ASH2L', # No good domains;
     'ATF7IP',
-    'ATXN7',
     #'BAP1', # Fixed
     #'CHAF1B', # Fixed;
+    'DOT1L',
     'EED', # No good domains
     'RBBP5',
+    'PRDM4',
     #'SUZ12', # Fixed
     #'SET', # Fixed
-    'TET2',
+    'SIRT6',
+    #'TET2', # Fixed;
     #'TEX10', #Fixed
     ]
 

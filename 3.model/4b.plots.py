@@ -111,7 +111,7 @@ for dom_idx, dom in enumerate(domain):
         tpfp_ratio = 0
         tp = max(tp)
         fp = max(fp)
-    elif max(fp) <= 0: # very good;
+    elif max(fp) == 0: # very good;
         pass_criteria = 'max(fp) == 0'
         auc = 1.0
         elbowE = min([0.1,
@@ -119,7 +119,7 @@ for dom_idx, dom in enumerate(domain):
             ]) # super specific, so use the best matching E
         tp = max(tp)
         fp = max(fp)
-    elif tpfp_ratio >= 3.0: # Probably also pretty good, but the E is a bit looser, set to the best E
+    elif tpfp_ratio >= 10.0: # Probably also pretty good, but the E is a bit looser, set to the best E
         pass_criteria = 'TP/FP ratio'
         auc = 1.0
         elbowE = min([0.1, max([domain[dom]['tp_bestE']['max']*100, 1e-100])]) # i.e. smallest valid E or 1e-100
