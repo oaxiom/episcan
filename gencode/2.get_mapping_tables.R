@@ -1,4 +1,4 @@
-
+mm
 library("biomaRt")
 ensembl_hs = useMart("ensembl", dataset="hsapiens_gene_ensembl")
 ensembl_mm = useMart("ensembl", dataset="mmusculus_gene_ensembl")
