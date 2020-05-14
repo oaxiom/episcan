@@ -11,7 +11,7 @@ for idx, line in enumerate(oh):
     elif 'ACC' in line:
         res[cname]['acc'] = line.split()[1]
     elif 'DESC' in line:
-        res[cname]['desc'] = line.split()[1]
+        res[cname]['desc'] = ' '.join(line.split()[1:])
 
     if (idx+1) % 1000000 == 0:
         print('Done {0:,} domains in {1:,} lines'.format(len(res), idx+1))
