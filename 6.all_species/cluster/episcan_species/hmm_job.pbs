@@ -1,0 +1,29 @@
+#PBS -l nodes=1:ppn=2
+#PBS -j oe
+#PBS -o searches/${out}/${out}.txt
+#PBS -q batch
+#PBS -V 
+cd $PBS_O_WORKDIR
+
+# expects:
+# inp = Location of the gzipped FASTA
+# out = the result name
+
+if ! [ -d searches/${out} ]
+then 
+    mkdir searches/${out}
+else
+    rm searches/${out}/*
+fi
+cd searches/${out}
+
+gunzip -c ${inp} >fasta.fa
+hmmsearch -E 0.1 --cpu 2 --noali --tblout tbl_out.tsv --domtblout domtbl_out.tsv $PBS_O_WORKDIR/passed_domains.hmm fasta.fa >/dev/null
+
+# cleanup the results, and get the number of peptides
+
+python3 ../../code/clean.py
+rm fasta.fa
+gzip domtbl_out.tsv
+
+
