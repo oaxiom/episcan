@@ -34,17 +34,20 @@ filt = [ # Must be a literal match:
     'AEBP2', 'APEX1','ARRB1',
     'ARNTL',
     'ANKRD32',
+    'ATAD2',
     'ATF2',
     'ATM',
     'ATR',
     'AURKA', 'AURKB', 'AURKC',
     'BUB1', 'BCKDK',
+    'BPTF',
     'C17orf49', # MYB TF
     'CDK1', 'CDK2', 'CDK3', 'CDK5', 'CDK7', 'CDK9', 'CDK17', 'CDC6',
     'CENPC',
     'CHEK1',
     'CHUK',
     'CIT',
+    'CLOCK',
     'CSNK2A1', 'CRB2',
     'CTCF', 'CTCFL', 'CLNS1A',
     'DAPK3','DDX50', 'DPPA3', 'DDB2',
@@ -59,6 +62,7 @@ filt = [ # Must be a literal match:
     'FOXA1', 'FOXO1', 'FOXP1', 'FOXP2', 'FOXP3', 'FOXP4',
     'GFI1', 'GFI1B', 'GATAD1',
     'GSG2',
+    'GATAD2A', 'GATAD2B',
     'HLCS', 'HASPIN',
     'HDGFL2', 'HMGB1', 'HINFP',
     'HIF1AN',
@@ -71,7 +75,7 @@ filt = [ # Must be a literal match:
     'MYSM1',
     'NAP1L4',
     'NEK6', 'NEK9', 'NEK8',
-    'NFYC',
+    'NFYB', 'NFYC',
     'PARG',
     'PAK2', 'PBK', 'PDP1', 'PDK1', 'PDK2', 'PDK3', 'PDK4', 'PKM', 'PKN1',
     'PIWIL4', 'PRR14',
@@ -96,8 +100,10 @@ filt = [ # Must be a literal match:
     'SRCAP',
     'SNAI1', 'SNAI2',
     'SP1',
-    'TAF2', 'TAF4', 'TAF6', 'TAF9', 'TAF12', 'TAF6L', 'TAF7', 'TAF9B',
+    'TAF1', 'TAF2', 'TAF4', 'TAF6', 'TAF9', 'TAF12', 'TAF6L', 'TAF7', 'TAF9B',
+    'TADA2A', 'TADA2B',
     'TTBK1', 'TLK1', 'TLK2', 'TSSK6', 'TRRAP', 'TTK',
+    'TP53',
     'TFDP1',
     'UBE2A', 'UBE2B', 'UBE2D1','UBE2E1','UBE2H','UBE2N','UBE2D3', 'UBE2T', 'UBR7', # UB system;
     'USP12', 'USP17L2',
@@ -106,10 +112,11 @@ filt = [ # Must be a literal match:
     'USP16',
     'USP44',
     'WSB2',
+    'VDR',
     'YWHAE', 'YY1',
     'VRK1',
     'ZCWPW1', 'ZFP57', 'ZMYM3', 'ZMYND8', 'ZNF516',
-    'ZNF217', 'ZNF532', 'ZNF592', 'ZNF687', 'ZNF711',
+    'ZNF217', 'ZNF532', 'ZNF592', 'ZNF687', 'ZNF711', 'ZNF541',
     'ZHX1', 'ZMYM2',
     ]
 
@@ -128,6 +135,13 @@ epifactors_hg38.load_list(newe)
 epifactors_hg38 = epifactors_hg38.removeDuplicates('ensp')
 epifactors_hg38.saveTSV('hs_epifactors.all.tsv', key_order=['ensp', 'name'])
 epifactors_hg38.save('hs_epifactors.all.glb')
+
+# The list of TFs also includes some Epigenetic factors, so this list is more for
+# and advisory on what to delete.
+tfs = glload(os.path.expanduser('~/Projects/glbase_bio_data/transcription_factors/hg19/all_tfs.glb'))
+epifactors_tfs = epifactors_hg38.map(genelist=tfs, key='name').removeDuplicates('name')
+epifactors_tfs.sort('name')
+epifactors_tfs.saveTSV('epifactors_tfs_overlap.tsv', key_order=['name'])
 
 # These are the more useful human-readable versions, unqique for hgncid
 epifactors_hg38 = epifactors_hg38.removeDuplicates('hgncid')
