@@ -10,6 +10,7 @@ Pfam-A.hmm*
 pfam.txt
 funfam-hmm3.lib
 unused
+get_data.sh
 
 *.txt
 *.tsv
@@ -22,6 +23,7 @@ unused
 *.hmm.h3i
 *.hmm.h3m
 *.hmm.h3p
+PANTHER15.0
 PANTHER15.0_ascii.tgz
 TIGRFAMs.hmm
 TIGRFAMs_14.0_HMM.tar
