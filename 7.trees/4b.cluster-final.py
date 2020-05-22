@@ -12,9 +12,17 @@ config.draw_mode = 'pdf'
 e = glload('model_matrix-trained.glb')
 dom_anns = glload('../domains/annotation_table.glb')
 
-num_clusters = 16
+num_clusters = 32
 
-c = e.tsne.cluster('KMeans', num_clusters=num_clusters)
+c = e.tsne.cluster('AgglomerativeClustering', num_clusters=num_clusters)
+
+e.tsne.scatter(filename="tsne-scatter-final.png".format(num_clusters),
+    label=False,
+    size=[3,3],
+    alpha=1.0,
+    label_font_size=6)
+
+e.tsne.cluster_tree(filename='tsne-tree.pdf')
 
 clus = {i: [] for i in range(num_clusters)}
 motif_clus_membership = {}
@@ -46,5 +54,12 @@ for motif_cluster in clus_genes:
     gl = gl.removeDuplicates('ensg')
 
     gl.saveTSV('clusters_genes/clus_{0}.tsv'.format(motif_cluster))
+    clus_genes[motif_cluster] = gl
 
+data = [len(clus_genes[c]) for c in clus_genes]
 
+print(data)
+
+shared.radial_plot('radial.pdf',
+    data=data,
+    title='Homo Sapiens')

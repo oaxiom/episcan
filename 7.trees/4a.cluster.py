@@ -9,8 +9,8 @@ config.draw_mode = 'pdf'
 e = glload('model_matrix-trained.glb')
 dom_anns = glload('../domains/annotation_table.glb')
 
-for num_clusters in range(2, 20):
-    c = e.tsne.cluster('KMeans', num_clusters=num_clusters)
+for num_clusters in range(2, 50):
+    c = e.tsne.cluster('AgglomerativeClustering', num_clusters=num_clusters)
 
     e.tsne.scatter(filename="tsne-scatter-cluster-{0}.png".format(num_clusters),
         label=False,
@@ -26,6 +26,7 @@ c = e.tsne.cluster('KMeans', num_clusters=num_clusters)
 e.tsne.scatter(filename="tsne-scatter-final.png".format(num_clusters),
     label=False,
     size=[3,3],
+    alpha=1.0,
     label_font_size=6)
 
 clus = {i: [] for i in range(num_clusters)}
@@ -40,5 +41,3 @@ for c in clus:
 
     gl.saveTSV('clusters/clus_{0}.tsv'.format(c))
 
-# get the genes identified by motifs in each cluster
-all_episcan = glload('../4.select/Hs.matches.glb')
