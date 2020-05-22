@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-import sys, os, glob
+import sys, os, glob, pickle
 from glbase3 import *
 
 sys.path.append('../')
@@ -37,6 +37,10 @@ for c in clus:
     gl = gl.map(genelist=dom_anns, key='name')
 
     gl.saveTSV('clusters/clus_{0}.tsv'.format(c))
+
+oh = open('cluster-domains.pickle', "wb")
+pickle.dump(clus, oh, -1)
+oh.close()
 
 # get the genes identified by motifs in each cluster
 all_episcan = glload('../4.select/Hs.matches.glb')

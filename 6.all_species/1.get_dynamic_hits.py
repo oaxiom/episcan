@@ -29,7 +29,8 @@ for species in glob.glob('cluster/episcan_species/searches/*/domtbl_out.tsv.gz')
             #print(hit)
             matches.append({'ensp': hit['peptide'],
                 'e': e,
-                'domain': hit['dom_name']})
+                'domain': hit['dom_name'],
+                'unq_key': '{0}-{1}'.format(hit['peptide'], hit['dom_name'])})
 
     # add wether it is in Epifactors DB, or not;
 
@@ -38,5 +39,7 @@ for species in glob.glob('cluster/episcan_species/searches/*/domtbl_out.tsv.gz')
     if matches: # Sometimes it's empty;
         gl = genelist()
         gl.load_list(matches)
-        gl.saveTSV('model_hits/{0}.matches.tsv'.format(species), key_order=['ensg', 'ensp', 'name'])
+        gl = gl.removeDuplicates('unq_key')
+        gl = gl.getColumns(['ensp', 'e', 'domain'])
+        gl.saveTSV('model_hits/{0}.matches.tsv'.format(species), key_order=['ensp', 'domain', 'e'])
         gl.save('model_hits_glbs/{0}.matches.glb'.format(species))
