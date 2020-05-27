@@ -2,7 +2,23 @@
 import numpy as np
 import matplotlib.pyplot as plot
 
-
+def get_division_cols(gl):
+    row_cols = []
+    for i in gl:
+        if i['div'] == 'Fungi':
+            row_cols.append('purple')
+        elif i['div'] == 'Vertebrates':
+            row_cols.append('red')
+        elif i['div'] == 'Metazoa':
+            row_cols.append('orange')
+        elif i['div'] == 'Plants':
+            row_cols.append('green')
+        elif i['div'] == 'Protists':
+            row_cols.append('blue')
+        else:
+            row_cols.append('grey')
+            print(i['div'], 'Not found')
+    return row_cols
 
 def radial_plot(filename, data, title):
     fig = plot.figure(figsize=(6,6))

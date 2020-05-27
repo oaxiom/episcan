@@ -16,6 +16,7 @@ get_data.sh
 *.tsv
 *.pickle
 .Rhistory
+*.csv
 
 *..pickle
 *.hmm
