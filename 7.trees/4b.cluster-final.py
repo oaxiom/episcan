@@ -6,13 +6,14 @@ sys.path.append('../')
 import shared
 
 [os.remove(f) for f in glob.glob('clusters/*.tsv')]
+[os.remove(f) for f in glob.glob('clusters_genes/*.tsv')]
 
 config.draw_mode = 'pdf'
 
 e = glload('model_matrix-trained.glb')
 dom_anns = glload('../domains/annotation_table.glb')
 
-num_clusters = 32
+num_clusters = 19
 
 c = e.tsne.cluster('AgglomerativeClustering', num_clusters=num_clusters)
 

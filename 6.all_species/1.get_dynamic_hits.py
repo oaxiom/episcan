@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-import numpy, pickle, glob
+import numpy, pickle, glob, sys, os
 from glbase3 import *
 import matplotlib.pyplot as plot
 
@@ -8,6 +8,9 @@ import matplotlib.pyplot as plot
 Collect all the peptide hits using the models defined in stage 3.
 
 '''
+
+[os.remove(f) for f in glob.glob('model_hits/*.tsv')]
+[os.remove(f) for f in glob.glob('model_hits_glbs/*.glb')]
 
 final_results = {}
 model_matrix = glload('../3.model/AUCtable.glb')
