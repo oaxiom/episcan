@@ -12,6 +12,8 @@ funfam-hmm3.lib
 unused
 get_data.sh
 
+*.gtf.gz
+
 *.txt
 *.tsv
 *.pickle

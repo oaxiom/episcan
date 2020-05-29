@@ -10,7 +10,7 @@ e = glload('model_matrix-trained.glb')
 dom_anns = glload('../domains/annotation_table.glb')
 
 for num_clusters in range(2, 50):
-    c = e.tsne.cluster('AgglomerativeClustering', num_clusters=num_clusters)
+    c = e.tsne.cluster('KMeans', num_clusters=num_clusters)
 
     e.tsne.scatter(filename="tsne-scatter-cluster-{0}.png".format(num_clusters),
         label=False,

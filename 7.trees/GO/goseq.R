@@ -21,7 +21,7 @@ for (filename in filenames) {
   vec = as.integer(all%in%ensg)
   names(vec) = all
   
-  pdf(paste("barplots.", filename, ".pdf", sep=""), width=6, height=1.8)
+  pdf(paste("barplots.", filename, ".pdf", sep=""), width=6, height=2.6)
   par(mar=c(4, 14, 3, 3)) 
   
   #pwf = nullp(vec, "mm10", "ensGene")#, bias.data=rep(100, length(vec)))

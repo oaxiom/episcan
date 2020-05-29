@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 import sys, os, glob, pickle
 from glbase3 import *
-
+1/0
 sys.path.append('../')
 import shared
 
@@ -13,7 +13,7 @@ config.draw_mode = 'pdf'
 e = glload('model_matrix-trained.glb')
 dom_anns = glload('../domains/annotation_table.glb')
 
-num_clusters = 19
+num_clusters = 10
 
 c = e.tsne.cluster('AgglomerativeClustering', num_clusters=num_clusters)
 
@@ -50,8 +50,9 @@ print(all_episcan)
 clus_genes = {c: [] for c in clus}
 
 for match in all_episcan:
-    motif_cluster = motif_clus_membership[match['domain']]
-    clus_genes[motif_cluster].append({'ensg': match['ensg'], 'name': match['name']})
+    if match['e'] < 1e-20: # Only get the really good match genes to stop weak overlaps to ogther clusters
+        motif_cluster = motif_clus_membership[match['domain']]
+        clus_genes[motif_cluster].append({'ensg': match['ensg'], 'name': match['name']})
 
 for motif_cluster in clus_genes:
     gl = genelist()
