@@ -9,12 +9,12 @@ keep_key = set(['gene_id', 'gene_biotype', 'gene_name'])
 
 species_data = glload('../6.all_species/species_data/all_species.glb')
 species_data = set(species_data['assembly_name'])
-print(species_data)
+#print(species_data)
 
 species_found = 0
 valid_species = 0
 
-for gtf in glob.glob('annotation_data/*/*.gtf.gz') + glob.glob('annotation_data/*/*/*.gtf.gz'):
+for gtf in glob.glob('annotation_data/*/*/*.gtf.gz') + glob.glob('annotation_data/*/*/*/*.gtf.gz'):
     if 'chr.' in gtf:
         continue
     if 'abinitio.' in gtf:
