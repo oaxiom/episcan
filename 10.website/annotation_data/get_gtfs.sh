@@ -37,7 +37,7 @@ open 'ftp://ftp.ensemblgenomes.org/pub/current/metazoa/gtf/';
 mirror -e -c --verbose --no-empty-dirs --include-glob $inc"
 cd ..
 
-# Also contains some dupes from otehr dbs, particularly metazoa
+# Also contains some dupes from other dbs, particularly metazoa
 cd vertebrates
 lftp -c "set ftp:list-options -a;
 open 'ftp://ftp.ensembl.org/pub/release-100/gtf/';

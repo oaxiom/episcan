@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 import sys, os, glob, pickle
 from glbase3 import *
-1/0
 sys.path.append('../')
 import shared
 

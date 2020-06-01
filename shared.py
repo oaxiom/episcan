@@ -20,6 +20,91 @@ def get_division_cols(gl):
             print(i['division'], 'Not found')
     return row_cols
 
+def remove_duplicate_domains_by_overlap(domains, overlap_percent=90):
+    # https://www.biostars.org/p/134579/
+
+    # Filter domains by a given E-value and overlapping cut-off.
+    filtered = []
+    domains.sort(key=lambda x: x['dom_loc'])
+
+    for i in range(0, len(domains)):
+        dom_loc_i = domains[i]['dom_loc']
+        if i:
+            dom_loc_i =   domains[i]['dom_loc']
+            dom_loc_im1 = domains[i-1]['dom_loc']
+            # domains
+            dom1len = dom_loc_i[1] - dom_loc_i[0]
+            dom2len = dom_loc_im1[1] - dom_loc_im1[0]
+            domlen = sorted([dom1len, dom2len])[0]
+            overlap = dom_loc_im1[1] - dom_loc_i[0]
+            if overlap/domlen*100 >= overlap_percent:
+                continue
+        filtered.append(domains[i])
+
+    return filtered
+
+
+def get_dynamic_e(hmmer_search, dynamicE):
+    '''
+    Criteria for selecting domains;
+
+    '''
+    skipped_too_short = 0
+    matches = []
+    for hit in hmmer_search:
+        domain = hit['dom_name']
+
+        e = float(hit['e'])
+
+        #print(hit, e, dynamicE[domain], e < dynamicE[domain])
+        if e < dynamicE[domain]:
+            dom_len = hit['dom_loc'][1] - hit['dom_loc'][0]
+            if dom_len < 20: # Some super short, dubious matches;
+                skipped_too_short += 1
+                continue
+
+            to_add = {
+                'e': e,
+                'len': hit['tlen'],
+                'qlen': hit['qlen'],
+                'dom_loc': hit['dom_loc'],
+                'domain': hit['dom_name'],
+                }
+
+            if '|' in hit['peptide']:
+                print(hit['peptide'])
+                t = hit['peptide'].split('|')
+                to_add['ensp'] = t[0].split('.')[0] # Special for Ensembl data;
+                to_add['ensg'] = t[2].split('.')[0]
+                to_add['name'] = t[6]
+            else:
+                to_add['ensp'] = hit['peptide']
+
+            to_add['unq_key'] = '{0}-{1}'.format(to_add['ensp'], hit['dom_name'])
+
+            matches.append(to_add)
+
+    # for each peptide, remove duplicate and overlapping domains;
+    genes = {}
+    for m in matches:
+        if m['ensp'] not in genes:
+            genes[m['ensp']] = []
+        genes[m['ensp']].append(m)
+
+    kept_hits = []
+    for g in genes:
+        filtered = remove_duplicate_domains_by_overlap(genes[g])
+
+        for m in filtered:
+            kept_hits.append(m)
+
+    print('Trimmed {0} to {1} domains'.format(len(matches), len(kept_hits)))
+    print('skipped_too_short={0}'.format(skipped_too_short))
+    matches = kept_hits
+
+    return matches
+
+
 def radial_plot(filename, data, title):
     fig = plot.figure(figsize=(6,6))
     #fig.subplots_adjust(0.02, 0.02, 0.97, 0.97, wspace=0.1, hspace=0.1)

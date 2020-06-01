@@ -1,7 +1,9 @@
 #!/usr/bin/env python3
-import numpy, pickle
+import sys, os, numpy, pickle
 from glbase3 import *
 import matplotlib.pyplot as plot
+sys.path.append('../')
+import shared
 
 '''
 
@@ -19,29 +21,16 @@ epifactors_unfiltered = glload('../1.extract_epifactors_FASTA/hs_epifactors.unfi
 
 hmmer_search = genelist(filename='Hs.gencode.txt', format=format.hmmer_domtbl)
 
-matches = []
-for hit in hmmer_search:
-    domain = hit['dom_name']
+matches = matches = shared.get_dynamic_e(hmmer_search, dynamicE)
 
-    e = float(hit['e'])
-
-    #print(hit, e, dynamicE[domain], e < dynamicE[domain])
-    if e < dynamicE[domain]:
-        spet = hit['peptide'].split('|')
-        if '-' in spet[6]: # name
-            continue
-        matches.append({'ensp': spet[0],
-            'ensg': spet[2],
-            'name': spet[6],
-            'e': e,
-            'domain': hit['dom_name']})
-
-# add wether it is in Epifactors DB, or not;
+# TODO: add wether it is in Epifactors DB, or not;
 
 gl = genelist()
 gl.load_list(matches)
 gl.saveTSV('Hs.matches.tsv', key_order=['ensg', 'ensp', 'name'])
 gl.save('Hs.matches.glb')
+
+print(gl)
 
 # Unfiltered result:
 

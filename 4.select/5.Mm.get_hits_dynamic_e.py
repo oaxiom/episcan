@@ -18,22 +18,7 @@ epifactors_filtered = glload('../1.extract_epifactors_FASTA/mm_epifactors.all.gl
 
 hmmer_search = genelist(filename='Mm.gencode.txt', format=format.hmmer_domtbl)
 
-matches = []
-for hit in hmmer_search:
-    domain = hit['dom_name']
-
-    e = float(hit['e'])
-
-    #print(hit, e, dynamicE[domain], e < dynamicE[domain])
-    if e < dynamicE[domain]:
-        spet = hit['peptide'].split('|')
-        if '-' in spet[6]: # name
-            continue
-        matches.append({'ensp': spet[0],
-            'ensg': spet[2],
-            'name': spet[6],
-            'e': e,
-            'domain': hit['dom_name']})
+matches = shared.get_dynamic_e(hmmer_search, dynamicE)
 
 # add wether it is in Epifactors DB, or not;
 
