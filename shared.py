@@ -20,26 +20,46 @@ def get_division_cols(gl):
             print(i['division'], 'Not found')
     return row_cols
 
-def remove_duplicate_domains_by_overlap(domains, overlap_percent=90):
+def remove_duplicate_domains_by_overlap_and_e(domains, overlap_percent=90):
     # https://www.biostars.org/p/134579/
 
     # Filter domains by a given E-value and overlapping cut-off.
-    filtered = []
-    domains.sort(key=lambda x: x['dom_loc'])
+    cycles = 0
+    num_overlaps = 1e6
+    while num_overlaps > 0 and cycles < 100:
+        cycles += 1
+        domains.sort(key=lambda x: x['dom_loc'])
 
-    for i in range(0, len(domains)):
-        dom_loc_i = domains[i]['dom_loc']
-        if i:
-            dom_loc_i =   domains[i]['dom_loc']
-            dom_loc_im1 = domains[i-1]['dom_loc']
-            # domains
-            dom1len = dom_loc_i[1] - dom_loc_i[0]
-            dom2len = dom_loc_im1[1] - dom_loc_im1[0]
-            domlen = sorted([dom1len, dom2len])[0]
-            overlap = dom_loc_im1[1] - dom_loc_i[0]
-            if overlap/domlen*100 >= overlap_percent:
-                continue
-        filtered.append(domains[i])
+        # Work out and prune the number of overlapping domains for this criteria
+        num_overlaps = 0
+        to_prune = []
+        for i1 in range(0, len(domains)):
+            for i2 in range(0, len(domains)):
+                if i1 < i2:
+                    d1l = domains[i1]['dom_loc']
+                    d2l = domains[i2]['dom_loc']
+                    if d1l[1] >= d2l[0] and d1l[0] <= d2l[1]: # collision;
+                        # domains
+                        dom1len = d1l[1] - d1l[0]
+                        dom2len = d2l[1] - d2l[0]
+                        domlen = sorted([dom1len, dom2len])[0]
+                        overlap = abs(d1l[1] - d2l[0])
+                        if (overlap/domlen)*100 >= overlap_percent:
+                            # keep the best e:
+                            #print(d1l, d2l)
+                            if domains[i1]['e'] >= domains[i2]['e']:
+                                to_prune.append(i1)
+                            else:
+                                to_prune.append(i2)
+
+                            num_overlaps += 1 # signal we still found an overlap;
+                            continue
+        filtered = []
+        # prune domains from the list;
+        for i in range(0, len(domains)):
+            if i not in to_prune:
+                filtered.append(domains[i])
+        domains = filtered
 
     return filtered
 
@@ -93,7 +113,7 @@ def get_dynamic_e(hmmer_search, dynamicE):
 
     kept_hits = []
     for g in genes:
-        filtered = remove_duplicate_domains_by_overlap(genes[g])
+        filtered = remove_duplicate_domains_by_overlap_and_e(genes[g])
 
         for m in filtered:
             kept_hits.append(m)
