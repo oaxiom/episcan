@@ -14,7 +14,7 @@ dom_anns = glload('../domains/annotation_table.glb')
 
 num_clusters = 10
 
-c = e.tsne.cluster('AgglomerativeClustering', num_clusters=num_clusters)
+c = e.tsne.cluster('KMeans', num_clusters=num_clusters)
 
 e.tsne.scatter(filename="tsne-scatter-final.png".format(num_clusters),
     label=False,
@@ -22,7 +22,7 @@ e.tsne.scatter(filename="tsne-scatter-final.png".format(num_clusters),
     alpha=1.0,
     label_font_size=6)
 
-e.tsne.cluster_tree(filename='tsne-tree.pdf')
+#e.tsne.cluster_tree(filename='tsne-tree.pdf')
 
 clus = {i: [] for i in range(num_clusters)}
 motif_clus_membership = {}
@@ -42,16 +42,31 @@ oh = open('cluster-domains.pickle', "wb")
 pickle.dump(clus, oh, -1)
 oh.close()
 
-# get the genes identified by motifs in each cluster
+# get the genes identified by motifs in each cluster, must go to their best e-value domain only
+# (i.e. each gene can only be added to a cluster once;
 all_episcan = glload('../4.select/Hs.matches.glb')
 print(all_episcan)
 
 clus_genes = {c: [] for c in clus}
 
+best_clusters = {}
+
+print(motif_clus_membership)
+
 for match in all_episcan:
-    if match['e'] < 1e-20: # Only get the really good match genes to stop weak overlaps to ogther clusters
-        motif_cluster = motif_clus_membership[match['domain']]
-        clus_genes[motif_cluster].append({'ensg': match['ensg'], 'name': match['name']})
+    #if match['e'] < 1e-20: # Only get the really good match genes to stop weak overlaps to ogther clusters
+    motif_cluster = motif_clus_membership[match['domain']]
+    if match['ensg'] not in best_clusters:
+        best_clusters[match['ensg']] = match
+        best_clusters[match['ensg']]['bestE'] = 1e10
+
+
+    if match['e'] < best_clusters[match['ensg']]['bestE']:
+        best_clusters[match['ensg']]['best_clus'] = motif_cluster
+        best_clusters[match['ensg']]['bestE'] = match['e']
+
+for row in best_clusters:
+    clus_genes[best_clusters[row]['best_clus']].append(best_clusters[row])
 
 for motif_cluster in clus_genes:
     gl = genelist()

@@ -40,7 +40,7 @@ for line in all_episcan:
         biggest_e = e
         print('New Biggest E', biggest_e)
 
-    tab[(ensp, ensp_lookup[ensp])][name] = 1 #max([tab[(ensp, ensp_lookup[ensp])][name], e, 10])
+    tab[(ensp, ensp_lookup[ensp])][name] = max([tab[(ensp, ensp_lookup[ensp])][name], e, 10])
 
 oh = open('model_matrix_hits.tsv', 'w')
 oh.write('{0}\n'.format('\t'.join(['ensp', 'name'] + doms)))
@@ -54,6 +54,6 @@ oh.close()
 # heatmap
 e = expression(loadable_list=gltab, cond_names=doms)
 
-e = e.filter_low_expressed(0.9, 1)
+#e = e.filter_low_expressed(0.9, 1)
 
 e.save('model_matrix.glb')
