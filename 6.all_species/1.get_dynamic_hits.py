@@ -24,9 +24,11 @@ dynamicE = {d['domain']: float(d['e']) for d in model_matrix}
 for species in glob.glob('cluster/episcan_species/searches/*/domtbl_out.tsv.gz'):
     hmmer_search = genelist(filename=species, format=format.hmmer_domtbl, gzip=True)
 
-    matches = shared.get_dynamic_e(hmmer_search, dynamicE)
-
     species = species.split('/')[3]
+    if species[0] == '_':
+        continue
+
+    matches = shared.get_dynamic_e(hmmer_search, dynamicE)
 
     if matches: # Sometimes it's empty;
         gl = genelist()

@@ -25,7 +25,7 @@ for model in model_matrix:
         passed_by[model['pass_criteria']] += 1
         continue
 
-    if model['auc'] >= 0.75 and model['TP/FP ratio'] > 3.0:
+    if model['auc'] >= 0.7: # and model['TP/FP ratio'] > 2.0:
         print(model)
         doms_to_keep.append(model)
         if model['pass_criteria'] not in passed_by:

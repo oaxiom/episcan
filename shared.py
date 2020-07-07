@@ -79,7 +79,7 @@ def get_dynamic_e(hmmer_search, dynamicE):
         #print(hit, e, dynamicE[domain], e < dynamicE[domain])
         if e < dynamicE[domain]:
             dom_len = hit['dom_loc'][1] - hit['dom_loc'][0]
-            if dom_len < 20: # Some super short, dubious matches;
+            if dom_len < 10: # Some super short, dubious matches;
                 skipped_too_short += 1
                 continue
 
@@ -104,6 +104,9 @@ def get_dynamic_e(hmmer_search, dynamicE):
 
             matches.append(to_add)
 
+    return matches
+
+def remove_duplicates_by_e(matches):
     # for each peptide, remove duplicate and overlapping domains;
     genes = {}
     for m in matches:

@@ -10,13 +10,16 @@ import shared
 config.draw_mode = 'pdf'
 
 e = glload('model_matrix-trained.glb')
+
+#e = shared.remove_duplicates_by_e(e)
+
 dom_anns = glload('../domains/annotation_table.glb')
 
-num_clusters = 10
+num_clusters = 16
 
-c = e.tsne.cluster('KMeans', num_clusters=num_clusters)
+c = e.umap.cluster('KMeans', num_clusters=num_clusters)
 
-e.tsne.scatter(filename="tsne-scatter-final.png".format(num_clusters),
+e.umap.scatter(filename="scatter-final.png".format(num_clusters),
     label=False,
     size=[3,3],
     alpha=1.0,
@@ -60,7 +63,6 @@ for match in all_episcan:
         best_clusters[match['ensg']] = match
         best_clusters[match['ensg']]['bestE'] = 1e10
 
-
     if match['e'] < best_clusters[match['ensg']]['bestE']:
         best_clusters[match['ensg']]['best_clus'] = motif_cluster
         best_clusters[match['ensg']]['bestE'] = match['e']
@@ -69,11 +71,14 @@ for row in best_clusters:
     clus_genes[best_clusters[row]['best_clus']].append(best_clusters[row])
 
 for motif_cluster in clus_genes:
+    if not clus_genes[motif_cluster]:
+        print("ERROR! {0} cluster is empty".format(motif_cluster))
+        continue
     gl = genelist()
     gl.load_list(clus_genes[motif_cluster])
     gl = gl.removeDuplicates('ensg')
 
-    gl.saveTSV('clusters_genes/clus_{0}.tsv'.format(motif_cluster))
+    gl.saveTSV('clusters_genes/clus_{0}.tsv'.format(motif_cluster), key_order=['ensg'])
     clus_genes[motif_cluster] = gl
 
 data = [len(clus_genes[c]) for c in clus_genes]

@@ -9,7 +9,7 @@ do
     echo Species = $base
     qsub -N hmm.$base -v inp=$species,out=$base hmm_job.pbs 
     echo
-    sleep 0.1
+    sleep 1
 done
 
 
@@ -21,7 +21,7 @@ do
     echo Species = $base
     qsub -N hmm.$base -v inp=$species,out=$base hmm_job.pbs
     echo
-    sleep 0.1
+    sleep 1
 done
 
 

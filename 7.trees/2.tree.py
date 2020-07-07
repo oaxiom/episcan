@@ -4,7 +4,7 @@ import matplotlib.cm as cmap
 from glbase3 import *
 
 e = glload('model_matrix.glb')
-e.log(2, .1)
+#e.log(2, .1)
 #print(e.getConditionNames())
 
 all_ensp = len(e)

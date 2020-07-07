@@ -21,7 +21,7 @@ epifactors_unfiltered = glload('../1.extract_epifactors_FASTA/hs_epifactors.unfi
 
 hmmer_search = genelist(filename='Hs.gencode.txt', format=format.hmmer_domtbl)
 
-matches = matches = shared.get_dynamic_e(hmmer_search, dynamicE)
+matches = shared.get_dynamic_e(hmmer_search, dynamicE)
 
 # TODO: add wether it is in Epifactors DB, or not;
 

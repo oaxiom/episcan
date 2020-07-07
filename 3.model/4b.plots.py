@@ -91,10 +91,14 @@ for dom_idx, dom in enumerate(domain):
     # convert fp, tp to rates:
     tpr = numpy.array(tp) / (max(tp)+1)
     fpr = numpy.array(fp) / (max(fp)+1)
-
     optimal_idx = numpy.argmax(tpr - fpr)
+
+    #optimal_idx = numpy.argmax(fpr - tpr)
+
+    optimal_threshold = 99-optimal_idx
+
     #print(tpr.shape, optimal_idx, tpr - fpr)
-    optimal_threshold = optimal_idx
+
     if max(fp) >= 1:
         tpfp_ratio = max(tp) / max(fp)
     else:
@@ -127,7 +131,7 @@ for dom_idx, dom in enumerate(domain):
         fp = max(fp)
     else: # see if AUC thinks it's best:
         pass_criteria = 'AUC'
-        elbowE = min([0.1,float('1e-{0}'.format(optimal_threshold))*100])
+        elbowE = min([0.1,float('1e-{0}'.format(optimal_threshold))])
         # TP/FP ratio should be the numebr at that threshold!
         tp = tp[optimal_threshold]
         fp = fp[optimal_threshold]
@@ -171,8 +175,8 @@ for d, t in zip(auc_data, auc_table):
     plot.xticks(fontsize=6)
     plot.yticks(fontsize=6)
     if tpfp_ratio != 0.0:
-        ax.axvline((-math.log10(t['e'])/100), c='steelblue', ls=':', lw=1.0)
-        ax.axvline(optimal_idx/100, c='grey', ls=':', lw=0.5)
+        ax.axvline(((99--math.log10(t['e']))/100), c='red', ls=':', lw=1.0)
+        ax.axhline((-math.log10(t['e'])/100), c='red', ls=':', lw=1.0)
     fig.savefig('rocs/AUC_{0}.pdf'.format(t['domain'].replace('/', '-')))
     plot.close(fig)
 
