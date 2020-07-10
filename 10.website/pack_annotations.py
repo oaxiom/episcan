@@ -14,7 +14,9 @@ species_data = set(species_data['assembly_name'])
 species_found = 0
 valid_species = 0
 
-for gtf in glob.glob('annotation_data/*/*/*.gtf.gz') + glob.glob('annotation_data/*/*/*/*.gtf.gz'):
+other_keys_seen = set([])
+
+for gtf in sorted(glob.glob('annotation_data/pep/*/pep/*.fa.gz')) + glob.glob('annotation_data/pep/*/*/pep.fa.gz'):
     if 'chr.' in gtf:
         continue
     if 'abinitio.' in gtf:
@@ -22,48 +24,63 @@ for gtf in glob.glob('annotation_data/*/*/*.gtf.gz') + glob.glob('annotation_dat
 
     species_found += 1
 
-    assembly_name = os.path.split(gtf)[1].replace('.47.gtf.gz', '') # 47 is the release number
+    assembly_name = os.path.split(gtf)[1].replace('.pep.all.fa.gz', '') # 47 is the release number
 
-    print(assembly_name)
+    if assembly_name[0] == '_':
+        continue
 
     if assembly_name not in species_data:
         continue
 
-    valid_species += 1
-
-    print('Doing {0}'.format(gtf))
+    print('Doing {0}'.format(assembly_name))
 
     oh = gzip.open(gtf, 'rt')
 
-    gtf_data = []
+    fasta_data = []
 
-    for line in oh:
-        if line[0] == '#':
-            continue
-        t = line.strip().rstrip(';').split('\t')
-        if t[2] == 'gene': # Only interested in the annotations
-            anns = t[-1].split('; ')
-            annotations = {}
-            for item in anns:
-                k, v = item.split(' "')
-                v = v.replace('"', '')
-                annotations[k] = v # = {k: v for k, v in zip(k, v)}
+    try:
+        for line in oh:
+            if line[0] == '#':
+                continue
 
-        keeps = {}
-        for a in annotations:
-            if a in keep_key:
-                keeps[a] = annotations[a]
+            if line[0] == '>': # Only interested in the annotations
+                #print(line)
+                t = line.strip().lstrip('>').rstrip(';').split(' ')
+                #print(t)
 
-        gtf_data.append(keeps)
+                result = {'ensp': t[0]}
+
+                for item in t[2:]:
+                    item = item.split(':')
+                    if len(item) < 2:
+                        continue
+                    if item[0] == 'gene':
+                        result['ensg'] = item[1]
+                    elif item[0] == 'transcript':
+                        result['enst'] = item[1]
+                    elif item[0] == 'gene_biotype':
+                        result['gene_biotype'] = item[1]
+                    elif item[0] == 'gene_symbol':
+                        result['name'] = item[1]
+                    else:
+                        other_keys_seen.add(item[0])
+
+            fasta_data.append(result)
+
+
+        # Save the kept keys:
+        gl = genelist()
+        gl.load_list(fasta_data)
+        gl = gl.removeDuplicates('ensp')
+        gl.save('annotations/{0}.glb'.format(assembly_name))
+        gl.saveTSV('annotations_tsv/{0}.tsv'.format(assembly_name))
+        valid_species += 1
+    except (EOFError, ValueError):
+        print('EOFError: {0}'.format(gtf))
+
     oh.close()
 
-
-    # Save the kept keys:
-    gl = genelist()
-    gl.load_list(gtf_data)
-    gl = gl.removeDuplicates('gene_id')
-    gl.save('annotations/{0}.glb'.format(assembly_name))
-    gl.saveTSV('annotations_tsv/{0}.tsv'.format(assembly_name))
+print(other_keys_seen)
 
 print('Found {0} species'.format(species_found))
 print('Found {0} valid species'.format(valid_species))

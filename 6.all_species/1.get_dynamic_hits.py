@@ -22,7 +22,11 @@ dynamicE = {d['domain']: float(d['e']) for d in model_matrix}
 #########
 
 for species in glob.glob('cluster/episcan_species/searches/*/domtbl_out.tsv.gz'):
-    hmmer_search = genelist(filename=species, format=format.hmmer_domtbl, gzip=True)
+    try:
+        hmmer_search = genelist(filename=species, format=format.hmmer_domtbl, gzip=True)
+    except IndexError:
+        print('ERROR! {0} IndexError'.format(species))
+        continue
 
     species = species.split('/')[3]
     if species[0] == '_':

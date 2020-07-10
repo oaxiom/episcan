@@ -33,4 +33,5 @@ freqs = expression(loadable_list=freqs, cond_names=['Cluster {0}'.format(i) for 
 
 print(freqs)
 
-freqs.heatmap('by_division.pdf', figsize=[5,4], heat_wid=0.7, heat_hei=0.1, bracket=[-2, 2])
+freqs.heatmap('by_division.pdf', figsize=[5,4], heat_wid=0.4, heat_hei=0.11, bracket=[-2, 2],
+    grid=True)
