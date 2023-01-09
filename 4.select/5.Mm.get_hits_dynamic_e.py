@@ -1,7 +1,9 @@
 #!/usr/bin/env python3
-import numpy, pickle
+import numpy, pickle, sys
 from glbase3 import *
 import matplotlib.pyplot as plot
+sys.path.append('../')
+import shared
 
 '''
 

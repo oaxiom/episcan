@@ -17,6 +17,9 @@ doms_to_keep = []
 passed_by = {}
 
 for model in model_matrix:
+    if model['TP/FP ratio'] <= 4.0:
+        continue
+
     if model['TP/FP ratio'] >= 100.0:
         print(model)
         doms_to_keep.append(model)
@@ -42,6 +45,7 @@ gl.load_list(doms_to_keep)
 gl = gl.map(genelist=dom_anns, key='domain')
 
 gl.saveTSV('passed_domains.tsv', key_order=['domain'])
+gl.save('passed_domains.glb')
 
 print()
 for k in passed_by:

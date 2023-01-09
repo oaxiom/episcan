@@ -12,7 +12,7 @@ Round 1, For each domain, work out a dynamic threshold for each motif, and disca
 '''
 
 final_results = {}
-model_matrix = glload('../3.model/AUCtable.glb')
+model_matrix = glload('passed_domains.glb')
 dynamicE = {d['domain']: float(d['e']) for d in model_matrix}
 epifactors_filtered = glload('../1.extract_epifactors_FASTA/hs_epifactors.all.glb').removeDuplicates('ensg')
 epifactors_unfiltered = glload('../1.extract_epifactors_FASTA/hs_epifactors.unfiltered.glb').removeDuplicates('ensg')
