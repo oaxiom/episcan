@@ -17,24 +17,11 @@ doms_to_keep = []
 passed_by = {}
 
 for model in model_matrix:
-    if model['TP/FP ratio'] <= 4.0:
-        continue
-
-    if model['TP/FP ratio'] >= 100.0:
-        print(model)
-        doms_to_keep.append(model)
-        if model['pass_criteria'] not in passed_by:
-            passed_by[model['pass_criteria']] =0
-        passed_by[model['pass_criteria']] += 1
-        continue
-
-    if model['auc'] >= 0.7: # and model['TP/FP ratio'] > 2.0:
-        print(model)
-        doms_to_keep.append(model)
-        if model['pass_criteria'] not in passed_by:
-            passed_by[model['pass_criteria']] = 0
-        passed_by[model['pass_criteria']] += 1
-        continue
+    # ALL selection is in ../3.select/5.final_scores.py
+    doms_to_keep.append(model)
+    if model['pass_criteria'] not in passed_by:
+        passed_by[model['pass_criteria']] =0
+    passed_by[model['pass_criteria']] += 1
 
 print('Kept {0} domains'.format(len(doms_to_keep)))
 
