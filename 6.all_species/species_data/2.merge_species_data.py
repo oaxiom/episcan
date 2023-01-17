@@ -2,6 +2,15 @@
 import sys, os, glob
 from glbase3 import *
 
+'''
+
+There are mismatches in the Ensembl annotations and the actual FASTAs avaiable.
+
+Fix that here by making the union of the two and only keeping species found in both
+datasets.
+
+'''
+
 
 all_species = glload('species_annotations/species.glb')
 

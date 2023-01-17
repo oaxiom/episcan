@@ -12,10 +12,9 @@ for f in glob.glob('*.txt'):
 
     for line in species:
         # Trim any assembly details;
-        print(line['name'])
-        t = re.split(' |_', line['name'])[0:2]
+        #print(line, line['name'])
+        t = re.split(' |_', str(line['name']))[0:2]
 
-        print(t)
         if len(t) == 2:
             name = '{0} {1}'.format(*t)
         elif len(t) == 1:

@@ -21,14 +21,14 @@ dynamicE = {d['domain']: float(d['e']) for d in model_matrix}
 
 #########
 
-for species in glob.glob('cluster/episcan_species/searches/*/domtbl_out.tsv.gz'):
+for species in glob.glob('search_all/domtbl/*.tsv.gz'):
     try:
         hmmer_search = genelist(filename=species, format=format.hmmer_domtbl, gzip=True)
     except IndexError:
-        print('ERROR! {0} IndexError'.format(species))
+        print(f'ERROR! {species} IndexError')
         continue
 
-    species = species.split('/')[3]
+    species = os.path.split(species)[1].replace('.tsv.gz', '')
     if species[0] == '_':
         continue
 
@@ -37,7 +37,8 @@ for species in glob.glob('cluster/episcan_species/searches/*/domtbl_out.tsv.gz')
     if matches: # Sometimes it's empty;
         gl = genelist()
         gl.load_list(matches)
-        gl = gl.removeDuplicates('unq_key')
+        gl = gl.removeDuplicates('unq_key') # unq_key = ensp-domain
         gl = gl.getColumns(['ensp', 'e', 'domain', 'len', 'dom_loc'])
+        gl.sort('ensp')
         gl.saveTSV('model_hits/{0}.matches.tsv'.format(species), key_order=['ensp', 'domain', 'e'])
         gl.save('model_hits_glbs/{0}.matches.glb'.format(species))
